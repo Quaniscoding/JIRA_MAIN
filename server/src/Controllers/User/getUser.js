@@ -10,7 +10,7 @@ const getUser = async (req, res) => {
         const filter = keyWord ? { username: { $regex: keyWord, $options: 'i' } } : {};
 
         // Find users matching the filter and exclude the password field
-        const result = await User.find(filter).select('-pass_word');
+        const result = await User.find(filter).select('-pass_word').select("-_id");
 
         // Send success response with the result
         successCode(res, result, "Lấy danh sách người dùng thành công!");

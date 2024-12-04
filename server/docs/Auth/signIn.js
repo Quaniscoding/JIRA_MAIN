@@ -1,23 +1,24 @@
 module.exports = {
-    "/api/user/signup": {
+    "/api/auth/signin": {
         post: {
-            "tags": [
-                "User"
-            ],
-            "operationId": "DangKy",
+            tags: ["Auth"],
+            "operationId": "signin",
             "consumes": [
                 "application/json-patch+json",
                 "application/json",
                 "text/json",
                 "application/*+json"
             ],
+            "produces": [
+                "application/json",
+            ],
             "requestBody": {
-                "description": "Sign up",
+                "description": "Sign in",
                 "require": "true",
                 "content": {
                     " application/json": {
                         schema: {
-                            $ref: "#/components/schemas/UserJiraModel",
+                            $ref: "#/components/schemas/UserJiraLogin",
                         },
 
                     }
@@ -28,6 +29,6 @@ module.exports = {
                     "description": "Success"
                 }
             }
-        }
-    },
+        },
+    }
 };

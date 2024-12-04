@@ -8,9 +8,9 @@ const CommentSchema = new Schema({
         unique: true
     },
     taskId: {
-        type: String
+        type: Number
     },
-    userId: { _id: { type: Schema.Types.ObjectId, ref: 'User', unique: true } },
+    userId: { id: { type: Number, ref: 'User', unique: true } },
     contentComment: {
         type: String,
     },

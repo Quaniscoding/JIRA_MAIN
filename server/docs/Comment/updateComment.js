@@ -12,6 +12,7 @@ module.exports = {
             "parameters": [
                 {
                     "name": "id",
+                    "description": "Nhập id của comment",
                     "in": "path",
                     "required": true,
                     "type": "string"
@@ -30,7 +31,7 @@ module.exports = {
                 "content": {
                     " application/json": {
                         schema: {
-                            $ref: "#/components/schemas/BinhLuanViewModel",
+                            $ref: "#/components/schemas/CommentModelUpdate",
                         },
 
                     }

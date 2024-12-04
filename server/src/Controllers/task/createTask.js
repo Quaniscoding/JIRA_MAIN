@@ -4,7 +4,7 @@ const User = require('../../Models/User.model');
 const Project = require('../../Models/Project.model');
 const Status = require('../../Models/Status.model');
 const TaskType = require('../../Models/TaskType.model');
-const Priority = require('../../Models/Priority.model');
+const Piority = require('../../Models/Piority.model');
 const { failCode, successCode, errorCode } = require('../../config/reponse');
 const generateId = require('../../utils/generateId');
 
@@ -20,12 +20,11 @@ const createTask = async (req, res) => {
         projectId,
         reporterId,
         typeId,
-        priorityId
+        piorityId
     } = req.body;
-    const id = await generateId('taskId');
+    const id = await generateId('task');
     try {
-        // Validate required fields
-        if (!taskName || !originalEstimate || !projectId || !typeId || !priorityId) {
+        if (!taskName || !originalEstimate || !projectId || !typeId || !piorityId) {
             return failCode(res, "", "Missing required fields");
         }
 
@@ -34,52 +33,42 @@ const createTask = async (req, res) => {
             return failCode(res, "", "A task with the same name, project, and status already exists");
         }
 
-        // Convert user IDs to ObjectId
-        const userObjectIds = listUserAssign.map(user => new mongoose.Types.ObjectId(user));
+        const listUserId = listUserAssign.map(user => user);
 
-        // Fetch usernames of assigned users
-        const users = await User.find({ _id: { $in: userObjectIds } });
-
-        // Map usernames to corresponding _id values
+        const users = await User.find({ id: { $in: listUserId } });
         const userListWithUsername = users.map(user => ({
             id: user.id,
             username: user.username
         }));
-
-        // Check if all assigned users exist
         if (users.length !== listUserAssign.length) {
             return failCode(res, "", "One or more assigned users do not exist");
         }
+        const status = await Status.findOne({ id: statusId });
 
-        // Check if status exists
-        const status = await Status.findById(statusId);
         if (!status) {
             return failCode(res, "", "Status does not exist");
         }
         const statusName = status.statusName;
 
-        // Check if project exists
-        const project = await Project.findById(projectId);
+        const project = await Project.findOne({ id: projectId });
         if (!project) {
             return failCode(res, "", "Project does not exist");
         }
 
-        // Check if type exists
-        const type = await TaskType.findById(typeId);
+        const type = await TaskType.findOne({ id: typeId });
         if (!type) {
             return failCode(res, "", "Type does not exist");
         }
         const typeName = type.taskType;
 
-        // Check if priority exists
-        const priority = await Priority.findById(priorityId);
-        if (!priority) {
-            return failCode(res, "", "Priority does not exist");
+        const piority = await Piority.findOne({ id: piorityId });
+        if (!piority) {
+            return failCode(res, "", "Piority does not exist");
         }
-        const priorityName = priority.priority;
+        const piorityName = piority.piority;
 
-        // Create a new task and save it to the Task collection
         const newTask = await Task.create({
+            id: id,
             listUserAssign: userListWithUsername,
             taskName,
             description,
@@ -90,16 +79,13 @@ const createTask = async (req, res) => {
             projectId,
             reporterId,
             typeId: { id: typeId, taskType: typeName },
-            priorityId: { id: priorityId, priority: priorityName }
+            piorityId: { id: piorityId, piority: piorityName }
         });
-
-        // Add the new task to the appropriate listTask.listTaskDetail
         await Project.updateOne(
-            { _id: projectId, 'listTask.statusId': statusId },
+            { id: projectId, 'listTask.statusId': statusId },
             { $push: { 'listTask.$.listTaskDetail': newTask } }
         );
-
-        return successCode(res, newTask, "Task created successfully");
+        return successCode(res, newTask, "Tác vụ được tạo thành công!");
     } catch (error) {
         console.log(error);
         return errorCode(res, "Backend error");

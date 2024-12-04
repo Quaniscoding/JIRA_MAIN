@@ -6,7 +6,7 @@ const updateProject = async (req, res) => {
         const id = req.params.id;
         const options = { new: true };
         const { projectName, description, categoryId, alias } = req.body;
-        const result = await Project.findByIdAndUpdate(id, { projectName, description, categoryId, alias }, options)
+        const result = await Project.findOneAndUpdate({id:id}, { projectName, description, categoryId, alias }, options).select("-_id")
         if (!result) {
             failCode(res, "", "Project does not exist !");
             return;
@@ -15,6 +15,8 @@ const updateProject = async (req, res) => {
             successCode(res, result, "Update Project success !")
         }
     } catch (error) {
+        console.log(error);
+        
         failCode(res, "Backend error !")
     }
 }

@@ -1,5 +1,5 @@
 module.exports = {
-    "/api/getUser/getUserByPagination?{pageIndex}?{pageSize}": {
+    "/api/getUser/getUserByPagination?{pageIndex}?{pageSize}?{keyword}": {
         get: {
             tags: ["User"],
             "operationId": "getUserByPagination",
@@ -25,7 +25,7 @@ module.exports = {
                 },
                 {
                     "name": "keyword",
-                    "in": "header",
+                    "in": "query",
                     "type": "string",
                 },
                 {

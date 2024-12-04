@@ -7,32 +7,34 @@ const assignUserProject = async (req, res) => {
         const { projectId, userId } = req.body;
 
         // Find user details
-        const userDetail = await User.findById(userId);
+        const userDetail = await User.find({ id: userId });
         if (!userDetail) {
-            return failCode(res, "", "User does not exist!");
+            return failCode(res, "", "Người dùng không tồn tại!");
         }
 
         const newUser = {
-            _id: userDetail._id,
+            id: userDetail.id,
             name: userDetail.username,
             avatar: userDetail.avatar,
             email: userDetail.email,
             phoneNumber: userDetail.phoneNumber
         };
-
+        // console.log(userDetail);
+        
+        // console.log(newUser);
+        // return
         // Find project and add user if not already a member
-        const result = await Project.findByIdAndUpdate(
-            projectId,
+        const result = await Project.findOneAndUpdate(
+            { id: projectId },
             {
-                $addToSet: { members: newUser }
+                $addToSet: { members: userDetail }
             },
             { new: true }
         );
-
         if (!result) {
-            return failCode(res, "", "Project does not exist!");
+            return failCode(res, "", "Dự án không tồn tại!");
         } else {
-            return successCode(res, "", "Assign user to Project success!");
+            return successCode(res, "", "Thêm người dùng vào dự án thành công!");
         }
     } catch (error) {
         return failCode(res, "Backend error!");

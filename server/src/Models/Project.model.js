@@ -8,7 +8,7 @@ const CommentSchema = new Schema({
         unique: true
     },
     userId: {
-        type: Schema.Types.ObjectId,
+        type: Number,
         ref: 'User',
         required: true
     },
@@ -32,17 +32,17 @@ const TaskDetailSchema = new Schema({
         require: true,
         unique: true
     },
-    listUserAssign: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    listUserAssign: [{ type: Object, ref: 'User' }],
     taskName: { type: String, required: true },
     description: { type: String },
-    statusId: { type: Schema.Types.ObjectId, ref: 'Status' },
+    statusId: { type: Object, ref: 'Status' },
     originalEstimate: { type: Number, required: true },
     timeTrackingSpent: { type: Number },
     timeTrackingRemaining: { type: Number },
-    projectId: { type: Schema.Types.ObjectId, ref: 'Project', required: true },
-    reporterId: { type: Schema.Types.ObjectId, ref: 'User' },
-    typeId: { type: Schema.Types.ObjectId, ref: 'TaskType' },
-    priorityId: { type: Schema.Types.ObjectId, ref: 'Priority' },
+    projectId: { type: Number, ref: 'Project', required: true },
+    reporterId: { type: Number, ref: 'User' },
+    typeId: { type: Object, ref: 'TaskType' },
+    piorityId: { type: Object, ref: 'Piority' },
     listComment: [CommentSchema]
 }, {
     versionKey: false,
@@ -50,6 +50,11 @@ const TaskDetailSchema = new Schema({
 
 // Define the schema for Project
 const ProjectSchema = new Schema({
+    id: {
+        type: Number,
+        require: true,
+        unique: true,
+    },
     projectName: {
         type: String,
         required: true,
@@ -59,7 +64,7 @@ const ProjectSchema = new Schema({
         required: true,
     },
     categoryId: {
-        type: Schema.Types.ObjectId, ref: 'projectCategory',
+        type: Number, ref: 'projectCategory',
         required: true,
     },
     alias: {
@@ -70,19 +75,16 @@ const ProjectSchema = new Schema({
         default: false
     },
     creator: {
-        _id: { type: Schema.Types.ObjectId, ref: 'User' },
+        id: { type: Number, ref: 'User' },
         username: String,
     },
     members: [{
-        _id: { type: Schema.Types.ObjectId, ref: 'User' },
-        name: String,
-        avatar: String,
-        email: String,
-        phoneNumber: String,
+        id: { type: Number, ref: 'User' },
+        username: String,
     }],
     listTask: [{
         listTaskDetail: [TaskDetailSchema],
-        statusId: { type: Schema.Types.ObjectId, ref: 'Status' },
+        statusId: { type: Number, ref: 'Status' },
         statusName: String,
         alias: String,
     }],

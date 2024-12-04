@@ -1,30 +1,25 @@
 module.exports = {
-    "/api/comment/createComment": {
+    "/api/auth/signup": {
         post: {
-            tags: ["Comment"],
-            "operationId": "createComment",
+            "tags": [
+                "Auth"
+            ],
+            "operationId": "DangKy",
             "consumes": [
                 "application/json-patch+json",
                 "application/json",
                 "text/json",
                 "application/*+json"
             ],
-            "parameters": [{
-                "name": "token",
-                "in": "header",
-                "description": "Nhập token",
-                "required": true,
-                "type": "string"
-            }
-            ],
             "requestBody": {
-                "description": "Post Comment",
+                "description": "Sign up",
                 "require": "true",
                 "content": {
-                    "application/json": {
+                    " application/json": {
                         schema: {
-                            $ref: "#/components/schemas/CommentModelInsert",
+                            $ref: "#/components/schemas/UserJiraModel",
                         },
+
                     }
                 },
             },
@@ -33,6 +28,6 @@ module.exports = {
                     "description": "Success"
                 }
             }
-        },
-    }
+        }
+    },
 };

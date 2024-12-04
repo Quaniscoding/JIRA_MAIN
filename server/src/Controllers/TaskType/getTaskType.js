@@ -3,7 +3,7 @@ const { successCode, failCode } = require('../../config/reponse');
 
 const getTaskType = async (req, res) => {
     try {
-        const result = await TaskType.find()
+        const result = await TaskType.find().select("-_id")
         if (result == "") {
             failCode(res, "", "List TaskType is not exist !")
         }

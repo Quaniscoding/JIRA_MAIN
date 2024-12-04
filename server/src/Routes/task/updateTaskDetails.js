@@ -1,15 +1,15 @@
 const express = require('express');
 const taskRoute = express.Router();
 const { verifyToken, verifyTokenAuthorization } = require('../../middlewares/baseToken.js');
-const { updateStatus, updatePriority, updateDescription, updateTimeTracking, updateEstimate } = require('../../Controllers/Task/updateTaskDetails');
+const { updateStatus, updatePiority, updateDescription, updateTimeTracking, updateEstimate } = require('../../Controllers/Task/updateTaskDetails');
 
 
 //Route for updating task status
 taskRoute.put('/updateStatus', verifyToken, verifyTokenAuthorization, updateStatus);
 
 
-// Route for updating task priority
-taskRoute.put('/updatePriority', verifyToken, verifyTokenAuthorization, updatePriority);
+// Route for updating task piority
+taskRoute.put('/updatePiority', verifyToken, verifyTokenAuthorization, updatePiority);
 
 // Route for updating task description
 taskRoute.put('/updateDescription', verifyToken, verifyTokenAuthorization, updateDescription);

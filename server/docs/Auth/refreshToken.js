@@ -1,8 +1,8 @@
 module.exports = {
-    "/api/user/signin": {
+    "/api/auth/refresh-token": {
         post: {
-            tags: ["User"],
-            "operationId": "signin",
+            tags: ["Auth"],
+            "operationId": "refresh-token",
             "consumes": [
                 "application/json-patch+json",
                 "application/json",
@@ -13,14 +13,13 @@ module.exports = {
                 "application/json",
             ],
             "requestBody": {
-                "description": "Sign in",
+                "description": "Refresh token",
                 "require": "true",
                 "content": {
                     " application/json": {
                         schema: {
-                            $ref: "#/components/schemas/UserJiraLogin",
+                            $ref: "#/components/schemas/RefreshToken",
                         },
-
                     }
                 },
             },

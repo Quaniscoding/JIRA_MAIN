@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const PrioritySchema = new Schema({
+const PioritySchema = new Schema({
     id: {
         type: Number,
         require: true,
         unique: true
     },
-    priority: {
+    piority: {
         type: String,
     },
     description: {
@@ -22,6 +22,6 @@ const PrioritySchema = new Schema({
 }, {
     versionKey: false // Disable the "__v" field
 })
-const Priority = mongoose.model('priority', PrioritySchema);
-module.exports = Priority
+const Piority = mongoose.model('Piority', PioritySchema);
+module.exports = Piority
 

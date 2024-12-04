@@ -9,13 +9,21 @@ module.exports = {
                 "text/json",
                 "application/*+json"
             ],
-            "parameters": [{
-                "name": "token",
-                "in": "header",
-                "description": "Nhập token",
-                "required": true,
-                "type": "string"
-            }
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string",
+                    "description": "Nhập id của task",
+                },
+                {
+                    "name": "token",
+                    "in": "header",
+                    "description": "Nhập token",
+                    "required": true,
+                    "type": "string"
+                }
             ],
             "responses": {
                 "200": {

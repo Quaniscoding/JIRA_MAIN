@@ -2,22 +2,25 @@ const { successCode, failCode, errorCode } = require("../../config/reponse");
 const Project = require('../../Models/Project.model')
 const deleteProject = async (req, res) => {
     const id = req.params.id;
-    const creatorId = req.user._id;
+    const creatorId = req.user.id;
     try {
-        const result = await Project.findByIdAndDelete(id)
+        const result = await Project.deleteOne({ id: id })
+        console.log(result);
         if (!result) {
-            failCode(res, "", 'Project does not exist.');
+            failCode(res, "", 'Dự án không tồn tại !');
         }
 
         else {
             const responseData = {
-                ...result.toObject(),
+                deletedProjectId: id,
                 creator: creatorId
             };
             delete responseData.listTask;
-            successCode(res, responseData, "Delete Project success!");
+            successCode(res, responseData, "Xóa dự án thành công!");
         }
     } catch (error) {
+        console.log(error);
+        
         errorCode(res, "Backend error !");
     }
 };

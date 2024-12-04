@@ -6,7 +6,7 @@ import getProjectCategory from './reducers/projects/getProjectCategory'
 import getProjectDetail from './reducers/projects/getProjectDetail'
 import updateProject from './reducers/projects/updateProject'
 import getAllStatus from './reducers/task/getAllStatus'
-import getAllPriority from './reducers/task/getAllPriority'
+import getAllPiority from './reducers/task/getAllPiority'
 import getAllTaskType from './reducers/task/getAllTaskType'
 import getListUserByProjectId from './reducers/users/getUserByProjectId';
 import getTaskDetail from './reducers/task/getTaskDetail'
@@ -21,7 +21,7 @@ export const store = configureStore({
     getProjectDetail,
     updateProject,
     getAllStatus,
-    getAllPriority,
+    getAllPiority,
     getAllTaskType,
     getListUserByProjectId,
     getTaskDetail,

@@ -5,6 +5,7 @@ const UserSchema = new Schema({
     id: {
         type: Number,
         unique: true,
+        require:true
     },
     username: {
         type: String,

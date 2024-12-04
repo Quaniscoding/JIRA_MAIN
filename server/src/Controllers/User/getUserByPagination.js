@@ -2,18 +2,20 @@ const User = require('../../Models/User.model');
 const { successCode, failCode, errorCode, errorCodeNew } = require('../../config/reponse');
 
 const getUserByPagination = async (req, res) => {
-    const { pageIndex, pageSize, keyWord } = req.query;
+    const { pageIndex, pageSize, keyword } = req.query;
+    console.log(keyword);
+    
     try {
         if (!pageSize || isNaN(Number(pageSize)) || Number(pageSize) <= 0) {
             errorCodeNew(res, "Kích thước trang phải là số dương lớn hơn 0.");
             return;
         }
         let query = {};
-        if (keyWord) {
+        if (keyword) {
             query = {
                 $or: [
-                    { username: { $regex: keyWord, $options: 'i' } },
-                    { email: { $regex: keyWord, $options: 'i' } },
+                    { username: { $regex: keyword, $options: 'i' } },
+                    { email: { $regex: keyword, $options: 'i' } },
                 ]
             };
         }

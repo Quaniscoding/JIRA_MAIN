@@ -22,6 +22,6 @@ const StatusSchema = new Schema({
     versionKey: false
 })
 
-const Status = mongoose.model('status', StatusSchema);
+const Status = mongoose.model('Status', StatusSchema);
 module.exports = Status
 

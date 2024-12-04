@@ -1,5 +1,5 @@
 module.exports = {
-    "/api/deleteComment/{id}": {
+    "/api/deleteComment/{taskId}/{commentId}": {
         delete: {
             tags: ["Comment"],
             "operationId": "deleteComment",
@@ -11,10 +11,16 @@ module.exports = {
             ],
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "taskId",
                     "in": "path",
                     "required": true,
-                    "type": "string"
+                    "type": "number"
+                },
+                {
+                    "name": "commentId",
+                    "in": "path",
+                    "required": true,
+                    "type": "number"
                 }, {
                     "name": "token",
                     "in": "header",

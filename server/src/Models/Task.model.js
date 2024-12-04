@@ -8,7 +8,7 @@ const CommentSchema = new Schema({
     unique: true
   },
   userId: {
-    type: Schema.Types.ObjectId,
+    type:Number,
     ref: "User",
     required: true,
   },
@@ -32,17 +32,17 @@ const TaskSchema = new Schema(
       require: true,
       unique: true
     },
-    listUserAssign: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    listUserAssign: [{ type: Object, ref: "User" }],
     taskName: { type: String, required: true },
     description: { type: String },
-    statusId: { type: Schema.Types.ObjectId, ref: "Status" },
+    statusId: { type: Object, ref: "Status" },
     originalEstimate: { type: Number, required: true },
     timeTrackingSpent: { type: Number },
     timeTrackingRemaining: { type: Number },
-    projectId: { type: Schema.Types.ObjectId, ref: "Project", required: true },
-    reporterId: { type: Schema.Types.ObjectId, ref: "User" },
-    typeId: { type: Schema.Types.ObjectId, ref: "TaskType" },
-    priorityId: { type: Schema.Types.ObjectId, ref: "Priority" },
+    projectId: { type: Number, ref: "Project", required: true },
+    reporterId: { type: Number, ref: "User" },
+    typeId: { type: Object, ref: "TaskType" },
+    piorityId: { type: Object, ref: "Piority" },
     listComment: [CommentSchema],
   },
   {

@@ -5,7 +5,20 @@ module.exports = {
                 "type": "object",
                 "properties": {
                     "taskId": {
+                        "type": "number",
+                        "description": "The ID of the task this comment is associated with"
+                    },
+                    "contentComment": {
                         "type": "string",
+                        "description": "The content of the comment"
+                    }
+                }
+            },
+            "CommentModelUpdate": {
+                "type": "object",
+                "properties": {
+                    "taskId": {
+                        "type": "number",
                         "description": "The ID of the task this comment is associated with"
                     },
                     "contentComment": {
@@ -99,16 +112,16 @@ module.exports = {
                     }
                 }
             },
-            "UpdatePriority": {
+            "UpdatePiority": {
                 "type": "object",
                 "properties": {
                     "taskId": {
                         "type": "string",
                         "description": "The ID of the task"
                     },
-                    "priorityId": {
+                    "piorityId": {
                         "type": "string",
-                        "description": "The ID of the new priority for the task"
+                        "description": "The ID of the new piority for the task"
                     }
                 }
             },
@@ -204,9 +217,9 @@ module.exports = {
                         "type": "string",
                         "description": "The ID of the type of the task"
                     },
-                    "priorityId": {
+                    "piorityId": {
                         "type": "string",
-                        "description": "The ID of the priority of the task"
+                        "description": "The ID of the piority of the task"
                     }
                 }
             },
@@ -260,9 +273,9 @@ module.exports = {
                         "type": "string",
                         "description": "The ID of the type of the task"
                     },
-                    "priorityId": {
+                    "piorityId": {
                         "type": "string",
-                        "description": "The ID of the priority of the task"
+                        "description": "The ID of the piority of the task"
                     }
                 }
             },
@@ -284,6 +297,43 @@ module.exports = {
                     "phoneNumber": {
                         "type": "string",
                         "description": "The phone number of the user"
+                    }
+                }
+            },
+            "UserModel":{
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "description": "The new name of the user"
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "description": "The first name of the user"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "description": "The last name of the user"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "The new email of the user"
+                    },
+                    "phone": {
+                        "type": "number",
+                        "description": "The new phone number of the user"
+                    },
+                    "pass_word": {
+                        "type": "string",
+                        "description": "The new password of the user"
+                    },
+                }
+            },
+            "RefreshToken":{
+                "type": "object",
+                "properties": {
+                    "token":{
+                        "type":"string"
                     }
                 }
             },

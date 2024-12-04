@@ -22,7 +22,6 @@ module.exports = {
                     "required": true,
                     "type": "string"
                 },
-
             ],
             "requestBody": {
                 "description": "Update user",
@@ -30,9 +29,8 @@ module.exports = {
                 "content": {
                     " application/json": {
                         schema: {
-                            $ref: "#/components/schemas/updateUser",
+                            $ref: "#/components/schemas/UserModel",
                         },
-
                     }
                 },
             },

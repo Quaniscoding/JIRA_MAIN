@@ -6,17 +6,16 @@ const getTaskDetail = async (req, res) => {
 
     try {
         // Find the task by its id
-        const task = await Task.findById(taskId);
+        const task = await Task.findOne({id:taskId}).select("-_id");
 
         // Check if the task exists
         if (!task) {
-            return failCode(res, "", "Task not found");
+            return failCode(res, "", "Không tìm thấy nhiệm vụ!");
         }
 
         // Return the task details
-        return successCode(res, task, "Task found");
+        return successCode(res, task, "Đã tìm thấy nhiệm vụ!");
     } catch (error) {
-        console.error(error);
         return errorCode(res, "Backend error");
     }
 };

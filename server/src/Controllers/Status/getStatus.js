@@ -3,7 +3,7 @@ const { successCode, failCode } = require('../../config/reponse');
 
 const getStatus = async (req, res) => {
     try {
-        const result = await Status.find()
+        const result = await Status.find().select("-_id")
         if (result == "") {
             failCode(res, "", "List Status is not exist !")
         }

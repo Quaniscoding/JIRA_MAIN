@@ -28,6 +28,7 @@ const createUser = async (req, res) => {
             successCode(res, "", "Tạo tài khoản thành công!");
         }
     } catch (error) {
+        console.log(error);
         errorCode(res, "Backend error")
     }
 }

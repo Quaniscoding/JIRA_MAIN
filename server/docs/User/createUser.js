@@ -23,9 +23,8 @@ module.exports = {
                 "content": {
                     " application/json": {
                         schema: {
-                            $ref: "#/components/schemas/NguoiDungViewModel",
+                            $ref: "#/components/schemas/UserModel",
                         },
-
                     }
                 },
             },

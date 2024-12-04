@@ -34,7 +34,8 @@ const verifyToken = (req, res, next) => {
 };
 
 const getTokenFromHeader = (req) => {
-    const authHeader = req.headers.authorization;
+    // const authHeader = req.headers.authorization;
+    const authHeader = req.headers.token;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return null;
@@ -43,7 +44,8 @@ const getTokenFromHeader = (req) => {
     return authHeader.split(' ')[1];
 };
 const verifyTokenAuthorization = (req, res, next) => {
-    const token = getTokenFromHeader(req);
+    // const token = getTokenFromHeader(req);
+    const token = req.headers.token;
 
     if (!token) {
         return res.status(401).send({
@@ -67,7 +69,8 @@ const verifyTokenAuthorization = (req, res, next) => {
 }
 const getUserInfoFromToken = (req, res, next) => {
     // Extract the token from the request headers
-    const token = getTokenFromHeader(req);
+    // const token = getTokenFromHeader(req);
+    const token = req.headers.token;
     if (!token) {
         // Handle case where token is missing
         return res.status(401).json({ error: 'Token is missing' });
@@ -75,7 +78,7 @@ const getUserInfoFromToken = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const userInfo = {
-            _id: decoded.data._id,
+            id: decoded.data.id,
             username: decoded.data.username,
         };
 
@@ -115,6 +118,7 @@ const refreshToken = (req, res) => {
         return res.status(200).send({
             status: 200,
             content: {
+                message:"Refresh token success !",
                 token: newAccessToken,
                 refreshToken: newRefreshToken,
             },

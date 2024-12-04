@@ -33,7 +33,7 @@ const getAllProject = async (req, res) => {
             _id: project._id
         }));
 
-        successCode(res, mappedResult, "Get list Project success!");
+        successCode(res, mappedResult, "Lấy danh sách dự án thành công!");
     } catch (error) {
         failCode(res, "Backend error!");
     }
