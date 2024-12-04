@@ -11,7 +11,8 @@ const getComment = async (req, res) => {
         }
 
         const result = task.listComment;
-
+        console.log(result);
+        
         return successCode(res, result, "Lấy danh sách bình luận thành công !");
     } catch (error) {
         console.error(error);
