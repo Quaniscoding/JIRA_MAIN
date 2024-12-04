@@ -54,7 +54,7 @@ rootRoute.use('/auth', signUp)
 rootRoute.use('/auth', signIn)
 //comment
 rootRoute.use('/comment', getComment)
-rootRoute.use('/comment', postComment)
+// rootRoute.use('/comment', postComment)
 rootRoute.use('/comment', deleteComment)
 rootRoute.use('/comment', updateComment)
 //user
