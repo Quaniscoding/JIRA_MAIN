@@ -2,7 +2,7 @@ const express = require('express');
 
 //comment
 const getComment = require('./Comment/getComment')
-const postComment = require('./Comment/createComment');
+const createComment = require('./Comment/createComment');
 const deleteComment = require('./Comment/deleteComment');
 const updateComment = require('./Comment/updateComment');
 //user
@@ -54,7 +54,7 @@ rootRoute.use('/auth', signUp)
 rootRoute.use('/auth', signIn)
 //comment
 rootRoute.use('/comment', getComment)
-// rootRoute.use('/comment', postComment)
+// rootRoute.use('/comment', createComment)
 rootRoute.use('/comment', deleteComment)
 rootRoute.use('/comment', updateComment)
 //user
