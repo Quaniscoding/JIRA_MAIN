@@ -27,7 +27,7 @@ module.exports = {
                     }
                 }
             },
-            "ProjectInsert": {
+            "CreateProject": {
                 "type": "object",
                 "properties": {
                     "projectName": {
@@ -39,7 +39,7 @@ module.exports = {
                         "description": "The description of the project"
                     },
                     "categoryId": {
-                        "type": "string",
+                        "type": "number",
                         "description": "The ID of the project category"
                     },
                     "alias": {
@@ -73,15 +73,28 @@ module.exports = {
                     }
                 }
             },
-            "UserProject": {
+            "AssignUserProject": {
                 "type": "object",
                 "properties": {
                     "projectId": {
-                        "type": "string",
+                        "type": "number",
                         "description": "The ID of the project"
                     },
                     "userId": {
-                        "type": "string",
+                        "type": "number",
+                        "description": "The ID of the user"
+                    }
+                }
+            },
+            "RemoveUserFromProject": {
+                "type": "object",
+                "properties": {
+                    "projectId": {
+                        "type": "number",
+                        "description": "The ID of the project"
+                    },
+                    "userId": {
+                        "type": "number",
                         "description": "The ID of the user"
                     }
                 }

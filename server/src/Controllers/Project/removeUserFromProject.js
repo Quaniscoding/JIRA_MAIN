@@ -9,7 +9,7 @@ const removeUserFromProject = async (req, res) => {
         if (!project) {
             return failCode(res, "", "Project does not exist!");
         }
-        const userIndex = project.members.findIndex(member => member.id === userId);
+        const userIndex = project.members.findIndex(member => member.id == userId);
 
         if (userIndex === -1) {
             return failCode(res, "", "Người dùng không phải là thành viên của dự án này!");

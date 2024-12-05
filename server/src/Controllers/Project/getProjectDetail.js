@@ -8,10 +8,10 @@ const getProjectDetail = async (req, res) => {
     try {
         const result = await Project.find({ id: id })
         if (result == "") {
-            failCode(res, "", "List Project is not exist !")
+            failCode(res, "", "Dự án không tồn tại !")
         }
         else {
-            successCode(res, result, "Get list Project success!")
+            successCode(res, result, "Lấy danh sách dự án thành công!")
         }
     } catch (error) {
         failCode(res, "Backend error !")

@@ -15,9 +15,9 @@ const getAllProject = async (req, res) => {
 
         // Fetch project categories in parallel
         const categoryIds = projects.map(project => project.categoryId);
-        const categories = await ProjectCategory.find({ _id: { $in: categoryIds } });
+        const categories = await ProjectCategory.find({ id: { $in: categoryIds } });
         const categoryMap = categories.reduce((acc, category) => {
-            acc[category._id] = category.projectCategoryName;
+            acc[category.id] = category.projectCategoryName;
             return acc;
         }, {});
 
@@ -30,7 +30,7 @@ const getAllProject = async (req, res) => {
             deleted: project.deleted,
             members: project.members,
             creator: project.creator,
-            _id: project._id
+            id: project.id
         }));
 
         successCode(res, mappedResult, "Lấy danh sách dự án thành công!");

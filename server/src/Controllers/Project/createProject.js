@@ -60,6 +60,8 @@ const createProject = async (req, res) => {
     return successCode(res, responseData, "Tạo dự án thành công!");
 
     } catch (error) {
+        console.log(error);
+        
         return errorCode(res, "Backend error");
     }
 };
