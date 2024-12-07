@@ -42,12 +42,13 @@ const { "/api/taskType/getTasktype": getTaskType } = require("../../docs/TaskTyp
 //projectCategory
 const { "/api/projectCategory/getProjectCategory": getProjectCategory } = require("../../docs/ProjectCategory/getProjectCategory.js")
 //project
-const {"/api/project/getAllProject":getAllProject} = require("../../docs/Project/getAllProject.js")
-const {"/api/project/getProjectDetail/{id}":getProjectDetail} = require("../../docs/Project/getProjectDetail.js")
-const {"/api/project/createProject":createProject} = require("../../docs/Project/createProject.js")
-const {"/api/project/assignUserProject":assignUserProject} = require("../../docs/Project/assignUserProject.js")
-const {"/api/project/removeUserFromProject":removeUserFromProject} = require("../../docs/Project/removeUserFromProject.js")
-const {"/api/project/updateProject/{id}":updateProject} = require("../../docs/Project/updateProject.js")
+const { "/api/project/getAllProject": getAllProject } = require("../../docs/Project/getAllProject.js")
+const { "/api/project/getProjectDetail/{id}": getProjectDetail } = require("../../docs/Project/getProjectDetail.js")
+const { "/api/project/createProject": createProject } = require("../../docs/Project/createProject.js")
+const { "/api/project/assignUserProject": assignUserProject } = require("../../docs/Project/assignUserProject.js")
+const { "/api/project/removeUserFromProject": removeUserFromProject } = require("../../docs/Project/removeUserFromProject.js")
+const { "/api/project/updateProject/{id}": updateProject } = require("../../docs/Project/updateProject.js")
+const { "/api/project/deleteProject/{projectId}": deleteProject } = require("../../docs/Project/deleteProject.js")
 //task
 
 const options = {
@@ -86,12 +87,13 @@ const options = {
       //projectCategory
       "/api/projectCategory/getProjectCategory": getProjectCategory,
       //project
-      "/api/project/getAllProject":getAllProject,
-      "/api/project/getProjectDetail/{id}":getProjectDetail,
-      "/api/project/createProject":createProject,
-      "/api/project/assignUserProject":assignUserProject,
-      "/api/project/removeUserFromProject":removeUserFromProject,
-      "/api/project/updateProject/{id}":updateProject
+      "/api/project/getAllProject": getAllProject,
+      "/api/project/getProjectDetail/{id}": getProjectDetail,
+      "/api/project/createProject": createProject,
+      "/api/project/assignUserProject": assignUserProject,
+      "/api/project/removeUserFromProject": removeUserFromProject,
+      "/api/project/updateProject/{id}": updateProject,
+      "/api/project/deleteProject/{projectId}": deleteProject
     },
   },
   apis: ["../routes/index.js", "../controllers/Auth/*.js"],

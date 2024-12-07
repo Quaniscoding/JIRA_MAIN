@@ -66,7 +66,7 @@ export default function Dashboard() {
                 </Breadcrumbs>
             </Box>
             <DashboardTable listProject={listProject} />
-            <DashboardList listProject={listProject} />
+            {/* <DashboardList listProject={listProject} /> */}
         </Box>
     );
 }

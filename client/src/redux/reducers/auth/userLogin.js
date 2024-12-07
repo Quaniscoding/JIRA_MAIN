@@ -4,7 +4,7 @@ import { DATA_USER, USER_LOGIN } from '../../../utils/constant';
 
 export const callLogin = (userLogin) => async () => {
     try {
-        const apiLogin = await http.post("user/signin", userLogin);
+        const apiLogin = await http.post("auth/signin", userLogin);
         saveStringLocal(USER_LOGIN, apiLogin.data.Token
         )
         saveLocal(DATA_USER, apiLogin.data.content)

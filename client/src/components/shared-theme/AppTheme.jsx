@@ -10,19 +10,19 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
     return disableCustomTheme
       ? {}
       : createTheme({
-          cssVariables: {
-            colorSchemeSelector: 'data-mui-color-scheme',
-            cssVarPrefix: 'template',
-          },
-          colorSchemes, 
-          typography,
-          // shadows,
-          // shape,
-          components: {
-            ...inputsCustomizations,
-            ...themeComponents,
-          },
-        });
+        cssVariables: {
+          colorSchemeSelector: 'data-mui-color-scheme',
+          cssVarPrefix: 'template',
+        },
+        colorSchemes,
+        typography,
+        // shadows,
+        // shape,
+        components: {
+          // ...inputsCustomizations,
+          ...themeComponents,
+        },
+      });
   }, [disableCustomTheme, themeComponents]);
   if (disableCustomTheme) {
     return <React.Fragment>{children}</React.Fragment>;

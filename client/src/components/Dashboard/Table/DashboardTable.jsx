@@ -28,11 +28,8 @@ import {
 } from '@mui/icons-material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-
-const rows = [
-
-];
-function RowMenu() {
+import CreateProjectModal from '../Modal/CreateProjectModal';
+function RowMenu({ id }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
@@ -44,6 +41,7 @@ function RowMenu() {
         setAnchorEl(null);
     };
     const handleEdit = () => {
+        console.log(id);
         setAnchorEl(null);
     }
     const handleDelete = () => {
@@ -124,8 +122,7 @@ function PaginationLaptopUp() {
     );
 }// eslint-disable-next-line react/prop-types
 function MainTable({ listProject }) {
-    console.log(listProject);
-
+    // console.log(listProject);
     const [selected, setSelected] = React.useState([]);
     return (
         <Paper sx={{ mt: 2, overflow: 'auto' }}>
@@ -135,11 +132,11 @@ function MainTable({ listProject }) {
                         <TableCell padding="checkbox">
                             <Checkbox
                                 indeterminate={
-                                    selected.length > 0 && selected.length !== rows.length
+                                    selected.length > 0 && selected.length !== listProject.length
                                 }
-                                checked={selected.length === rows.length}
+                                checked={selected.length === listProject.length}
                                 onChange={(event) => {
-                                    setSelected(event.target.checked ? rows.map((row) => row.id) : []);
+                                    setSelected(event.target.checked ? listProject.map((row) => row.id) : []);
                                 }}
                             />
                         </TableCell>
@@ -147,41 +144,35 @@ function MainTable({ listProject }) {
                         <TableCell>Project name</TableCell>
                         <TableCell>Creator</TableCell>
                         <TableCell>Description</TableCell>
+                        <TableCell>Members</TableCell>
+                        <TableCell>Category</TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {/* eslint-disable-next-line react/prop-types */}
                     {listProject.map((row) => (
-                        <TableRow key={row._id}>
+                        <TableRow key={row.id}>
                             <TableCell padding="checkbox">
                                 <Checkbox
-                                    checked={selected.includes(row._id)}
+                                    checked={selected.includes(row.id)}
                                     onChange={(event) => {
                                         if (event.target.checked) {
-                                            setSelected((prev) => [...prev, row._id]);
+                                            setSelected((prev) => [...prev, row.id]);
                                         } else {
-                                            setSelected((prev) => prev.filter((id) => id !== row._id));
+                                            setSelected((prev) => prev.filter((id) => id !== row.id));
                                         }
                                     }}
                                 />
                             </TableCell>
-                            <TableCell>{row._id}</TableCell>
+                            <TableCell>{row.id}</TableCell>
                             <TableCell>{row.projectName}</TableCell>
                             <TableCell>{row.creator.username}</TableCell>
+                            <TableCell>{row.description}</TableCell>
+                            <TableCell>{row.members}</TableCell>
+                            <TableCell>{row.projectCategoryName}</TableCell>
                             <TableCell>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Typography>{row.description}</Typography>
-                                    {/* <Box>
-                                        <Typography>{row.customer.name}</Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            {row.customer.email}
-                                        </Typography>
-                                    </Box> */}
-                                </Box>
-                            </TableCell>
-                            <TableCell>
-                                <RowMenu />
+                                <RowMenu id={row.id} />
                             </TableCell>
                         </TableRow>
                     ))}
@@ -193,77 +184,16 @@ function MainTable({ listProject }) {
 // eslint-disable-next-line react/prop-types
 export default function DashboardTable({ listProject }) {
 
-    const [open, setOpen] = React.useState(false);
+    const [openDrawerCreateProject, setOpenDrawerCreateProject] = React.useState(false);
 
-    const renderFilters = () => (
-        <>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
-                <InputLabel>Status</InputLabel>
-                <Select label="Status" defaultValue="">
-                    <MenuItem value="paid">Paid</MenuItem>
-                    <MenuItem value="pending">Pending</MenuItem>
-                    <MenuItem value="refunded">Refunded</MenuItem>
-                    <MenuItem value="cancelled">Cancelled</MenuItem>
-                </Select>
-            </FormControl>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
-                <InputLabel>Category</InputLabel>
-                <Select label="Category" defaultValue="">
-                    <MenuItem value="all">All</MenuItem>
-                    <MenuItem value="refund">Refund</MenuItem>
-                    <MenuItem value="purchase">Purchase</MenuItem>
-                    <MenuItem value="debit">Debit</MenuItem>
-                </Select>
-            </FormControl>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
-                <InputLabel>Customer</InputLabel>
-                <Select label="Customer" defaultValue="">
-                    <MenuItem value="all">All</MenuItem>
-                    <MenuItem value="olivia">Olivia Rhye</MenuItem>
-                    <MenuItem value="steve">Steve Hampton</MenuItem>
-                    <MenuItem value="ciaran">Ciaran Murray</MenuItem>
-                </Select>
-            </FormControl>
-        </>
-    );
-
+    const toggleDrawer = (open) => (event) => {
+        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+        setOpenDrawerCreateProject(open);
+    };
     return (
         <>
-            <Box sx={{ display: { xs: 'flex', sm: 'none' }, my: 1, gap: 1 }}>
-                <TextField
-                    size="small"
-                    placeholder="Search"
-                    InputProps={{
-                        startAdornment: <SearchIcon sx={{ mr: 1 }} />,
-                    }}
-                    sx={{ flexGrow: 1 }}
-                />
-                <IconButton size="small" color="default" onClick={() => setOpen(true)}>
-                    <FilterAltIcon />
-                </IconButton>
-                <Modal open={open} onClose={() => setOpen(false)}>
-                    <Box
-                        sx={{
-                            bgcolor: 'background.paper',
-                            width: '90%',
-                            maxWidth: 400,
-                            mx: 'auto',
-                            my: '20vh',
-                            p: 3,
-                            borderRadius: 2,
-                        }}
-                    >
-                        <Typography variant="h6">Filters</Typography>
-                        <Divider sx={{ my: 2 }} />
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            {renderFilters()}
-                            <Button color="primary" onClick={() => setOpen(false)}>
-                                Submit
-                            </Button>
-                        </Box>
-                    </Box>
-                </Modal>
-            </Box>
             <Box sx={{ display: { xs: 'none', sm: 'flex' }, flexWrap: 'wrap', gap: 1.5 }}>
                 <FormControl size="small" sx={{ flex: 1 }}>
                     <TextField
@@ -274,10 +204,12 @@ export default function DashboardTable({ listProject }) {
                         }}
                     />
                 </FormControl>
-                {renderFilters()}
+                <Button variant="outlined" size='small' onClick={toggleDrawer(true)}>Create project</Button>
+                <Button variant="outlined" size='small'>Create task</Button>
             </Box>
             <MainTable listProject={listProject} />
             <PaginationLaptopUp />
+            <CreateProjectModal openDrawerCreateProject={openDrawerCreateProject} toggleDrawer={toggleDrawer} setOpenDrawerCreateProject={setOpenDrawerCreateProject} />
         </>
     );
 }

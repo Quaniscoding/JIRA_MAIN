@@ -12,7 +12,7 @@ http.interceptors.request.use((config) => {
         headers: {
             ...config.headers,
             token: getStringLocal(USER_LOGIN),
-            Authorization: `Bearer ${getStringLocal(USER_LOGIN)}`
+            // Authorization: `Bearer ${getStringLocal(USER_LOGIN)}`
         }
     }
 }, err => { console.log(err) })

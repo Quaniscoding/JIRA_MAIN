@@ -116,7 +116,9 @@ function RowMenu() {
     );
 }
 
-export default function DashboardList() {
+export default function DashboardList({ listProject }) {
+    console.log(listProject);
+
     return (
         <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
             {listItems.map((listItem) => (
