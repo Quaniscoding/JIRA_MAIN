@@ -12,10 +12,12 @@ import getListUserByProjectId from './reducers/users/getUserByProjectId';
 import getTaskDetail from './reducers/task/getTaskDetail'
 import getComments from './reducers/comments/getComments'
 import getUserById from './reducers/users/getUserById'
+import  callGetListProjectByPagination  from './reducers/projects/getProjectByPagination';
 export const store = configureStore({
   reducer: {
     userSignUp,
     getAllProject,
+    callGetListProjectByPagination,
     getUser,
     getProjectCategory,
     getProjectDetail,

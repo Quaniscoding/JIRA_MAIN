@@ -34,12 +34,14 @@ import BrightnessAutoRoundedIcon from "@mui/icons-material/BrightnessAutoRounded
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { closeSidebar } from "../../utils/utils";
 import ColorModeSelect from "../shared-theme/ColorModeSelect.jsx";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { DATA_PROJECT, DATA_USER, USER_LOGIN } from './../../utils/constant';
 export default function Sidebar() {
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [reset, setReset] = React.useState(0);
   const location = useLocation();
-
+  const navigate = useNavigate();
   const getSelectedItem = () => {
     switch (location.pathname) {
       case '/dashboard':
@@ -60,7 +62,13 @@ export default function Sidebar() {
         return 'home';
     }
   };
-
+  const handleLogout = () => {
+    setReset(reset + 1);
+    localStorage.removeItem(DATA_USER);
+    localStorage.removeItem(USER_LOGIN);
+    localStorage.removeItem(DATA_PROJECT);
+    navigate("/login");
+  };
   const selectedItem = getSelectedItem();
   return (
     <Box
@@ -296,7 +304,7 @@ export default function Sidebar() {
             siriwatk@test.com
           </Typography>
         </Box>
-        <IconButton size='small' color='default'>
+        <IconButton size='small' color='default' onClick={()=>handleLogout()}>
           <LogoutRoundedIcon />
         </IconButton>
       </Box>

@@ -24,5 +24,6 @@ export const callGetListProjectDetail = (idProject) => async (dispatch) => {
         dispatch(getListProjectDetail(result.data.content));
     } catch (err) {
         // console.log(err);
+        return err
     }
 }

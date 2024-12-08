@@ -46,6 +46,7 @@ const updatePiority = require('./task/updateTaskDetails')
 const updateDescription = require('./task/updateTaskDetails')
 const updateTimeTracking = require('./task/updateTaskDetails')
 const updateEstimate = require('./task/updateTaskDetails');
+const getProjectByPagination = require('./Project/getProjectByPagination')
 //token
 const refreshToken = require('./token/refreshToken');
 //auth
@@ -93,7 +94,7 @@ rootRoute.use('/project', createTask);
 rootRoute.use('/project', getTaskDetail);
 rootRoute.use('/project', updateTask);
 rootRoute.use('/project', deleteTask);
-
+rootRoute.use('/project', getProjectByPagination)
 rootRoute.use('/project', updateStatus);
 rootRoute.use('/project', updatePiority);
 rootRoute.use('/project', updateDescription);
