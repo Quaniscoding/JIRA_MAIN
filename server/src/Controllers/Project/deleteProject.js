@@ -5,11 +5,9 @@ const deleteProject = async (req, res) => {
     const creatorId = req.user.id;
     try {
         const result = await Project.deleteOne({ id: id })
-        console.log(result);
         if (!result) {
             failCode(res, "", 'Dự án không tồn tại !');
         }
-
         else {
             const responseData = {
                 deletedProjectId: id,
@@ -19,8 +17,6 @@ const deleteProject = async (req, res) => {
             successCode(res, responseData, "Xóa dự án thành công!");
         }
     } catch (error) {
-        console.log(error);
-        
         errorCode(res, "Backend error !");
     }
 };

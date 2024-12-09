@@ -19,7 +19,8 @@ const StatusSchema = new Schema({
         type: String
     }
 }, {
-    versionKey: false
+    versionKey: false,
+    _id:false
 })
 
 const Status = mongoose.model('Status', StatusSchema);

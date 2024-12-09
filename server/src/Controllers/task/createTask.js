@@ -24,7 +24,14 @@ const createTask = async (req, res) => {
     } = req.body;
     const id = await generateId('task');
     try {
-        if (!taskName || !originalEstimate || !projectId || !typeId || !piorityId) {
+        if (
+            taskName === undefined || 
+            originalEstimate === undefined || 
+            projectId === undefined || 
+            typeId === undefined || 
+            piorityId === undefined || 
+            statusId === undefined
+        ) {
             return failCode(res, "", "Missing required fields");
         }
 

@@ -2,15 +2,19 @@ const Project = require('../../Models/Project.model');
 const ProjectCategory = require('../../Models/ProjectCategory.model');
 const { successCode, failCode } = require('../../config/reponse');
 
-const getAllProject = async (req, res) => {
-    const keyWord = req.query.keyWord || '';
+const getProjectByUserId = async (req, res) => {
+    const userId = req.query.userId
     try {
-        // Find projects based on keyword
-        const projects = await Project.find({ projectName: { $regex: new RegExp(keyWord, 'i') } });
+        // Find projects where the userId is in either the creator or members of the project
+        const projects = await Project.find({
+            $or: [
+                { 'creator.id': userId },
+            ]
+        });
 
         // If no projects are found
         if (projects.length === 0) {
-            return failCode(res, [], "No projects found!");
+            return failCode(res, [], "No projects found for this user!");
         }
 
         // Fetch project categories in parallel
@@ -39,4 +43,4 @@ const getAllProject = async (req, res) => {
     }
 }
 
-module.exports = { getAllProject };
+module.exports = { getProjectByUserId };

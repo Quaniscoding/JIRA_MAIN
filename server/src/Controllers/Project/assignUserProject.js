@@ -12,16 +12,6 @@ const assignUserProject = async (req, res) => {
             return failCode(res, "", "Người dùng không tồn tại!");
         }
 
-        const newUser = {
-            id: userDetail.id,
-            name: userDetail.username,
-            avatar: userDetail.avatar,
-            email: userDetail.email,
-            phoneNumber: userDetail.phoneNumber
-        };
-        // console.log(userDetail);
-        
-        // console.log(newUser);
         // return
         // Find project and add user if not already a member
         const result = await Project.findOneAndUpdate(
