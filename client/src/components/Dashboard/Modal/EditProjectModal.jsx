@@ -8,19 +8,20 @@ import {
     SwipeableDrawer,
     Button,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import CustomSnackbar from "../../CustomSnackbar/CustomSnackbar";
-import { callCreateProject } from "./../../../redux/reducers/projects/createProject";
-import { callGetListProject } from "../../../redux/reducers/projects/getAllProject";
 import { useDispatch } from "react-redux";
 import CircularProgressWithLabel from "../../CircularProgressWithLabel/CircularProgressWithLabel";
+import { callGetListProjectDetail } from './../../../redux/reducers/projects/getProjectDetail';
+import { callUpdateProject } from "../../../redux/reducers/projects/updateProject";
 import { callGetListProjectByPagination } from "../../../redux/reducers/projects/getProjectByPagination";
 
-export default function CreateProjectModal({
-    openDrawerCreateProject,
-    toggleDrawer,
-    setOpenDrawerCreateProject,
+export default function EditProjectModal({
+    openDrawerEditProject,
+    toggleDrawer2,
+    setOpenDrawerEditProject,
+    projectId
 }) {
     const categories = [
         { id: 0, name: "Dự án phần mềm" },
@@ -36,6 +37,26 @@ export default function CreateProjectModal({
         categoryId: "",
         alias: "",
     });
+    useEffect(() => {
+        const fetchProjectDetails = async () => {
+            if (projectId !== 0) {
+                const result = await dispatch(callGetListProjectDetail(projectId));
+                if (result && result.length > 0) {
+                    const project = result[0]; 
+                    setFormValues({
+                        projectName: project.projectName,
+                        description: project.description,
+                        categoryId: project.categoryId,
+                        alias: project.alias,
+                    });
+                }
+            }
+        };
+    
+        fetchProjectDetails(); // Call the async function
+    
+    }, [projectId]);
+    
     const [errors, setErrors] = useState({});
     const [snackbar, setSnackbar] = React.useState({
         open: false,
@@ -46,7 +67,7 @@ export default function CreateProjectModal({
         setSnackbar({ ...snackbar, open: false });
     };
     const handleChange = e => {
-        const { name, value } = e.target;        
+        const { name, value } = e.target;
         setFormValues(prevValues => ({
             ...prevValues,
             [name]: value,
@@ -85,10 +106,11 @@ export default function CreateProjectModal({
             setLoading(false);
             return;
         }
-        try {
-            const result = await dispatch(callCreateProject(formValues));
     
-            if (result.isCreate) {
+        try {
+            const result = await dispatch(callUpdateProject(projectId,formValues));
+    
+            if (result.isUpdate) {
                 for (let i = 15; i <= 90; i += 15) {
                     if (!isMounted) return;
                     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -96,6 +118,8 @@ export default function CreateProjectModal({
                 }
     
                 if (isMounted) setProgress(100);
+    
+                
     
                 setSnackbar({
                     open: true,
@@ -111,7 +135,7 @@ export default function CreateProjectModal({
                             categoryId: "",
                             alias: "",
                         });
-                        setOpenDrawerCreateProject(false);
+                        setOpenDrawerEditProject(false);
                         setProgress(0);
                     }
                 }, 3000);
@@ -144,9 +168,9 @@ export default function CreateProjectModal({
     return (
         <SwipeableDrawer
             anchor='right'
-            open={openDrawerCreateProject}
-            onClose={() => toggleDrawer(false)}
-            onOpen={() => toggleDrawer(true)}
+            open={openDrawerEditProject}
+            onClose={() => toggleDrawer2(false)}
+            onOpen={() => toggleDrawer2(true)}
         >
             {loading && (
                 <Box
@@ -166,7 +190,7 @@ export default function CreateProjectModal({
                 </Box>
             )}
             <IconButton
-                onClick={toggleDrawer(false)}
+                onClick={toggleDrawer2(false)}
                 sx={{
                     position: "absolute",
                     top: 10,
@@ -207,7 +231,7 @@ export default function CreateProjectModal({
                 }}
             >
                 <Typography variant='h5' textAlign='center'>
-                    Create Project
+                    Edit Project
                 </Typography>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -255,7 +279,7 @@ export default function CreateProjectModal({
                             ))}
                         </TextField>
                     </Grid>
-                    <Grid item xs={12} >
+                    <Grid item xs={12}>
                         <TextField
                             name='alias'
                             label='Alias'
@@ -274,7 +298,7 @@ export default function CreateProjectModal({
                             fullWidth
                             onClick={handleSubmit}
                         >
-                            Create
+                            Update
                         </Button>
                     </Grid>
                 </Grid>

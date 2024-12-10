@@ -9,6 +9,7 @@ const getAllStatus = createSlice({
     name: "getAllStatus",
     initialState,
     reducers: {
+        // eslint-disable-next-line no-unused-vars
         getlistStatus: (state, { type, payload }) => {
             state.listStatus = payload;
         }
@@ -21,10 +22,10 @@ export default getAllStatus.reducer
 
 export const callGetListStatus = async (dispatch) => {
     try {
-        const apiGetProject = await http.get(`/status/getStatus`)
-        dispatch(getlistStatus(apiGetProject.data.content));
+        const result = await http.get(`/status/getStatus`)
+        dispatch(getlistStatus(result.data.content));
     } catch (err) {
-        console.log(err);
+        return err
     }
 
 }

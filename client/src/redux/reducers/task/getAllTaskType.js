@@ -20,10 +20,10 @@ export const { getlistTaskType } = getAllTaskType.actions
 export default getAllTaskType.reducer
 export const callGetListTaskType = async (dispatch) => {
     try {
-        const apiGetProject = await http.get(`/taskType/getTasktype`)
-        dispatch(getlistTaskType(apiGetProject.data.content));
+        const result = await http.get(`/taskType/getTasktype`)
+        dispatch(getlistTaskType(result.data.content));
     } catch (err) {
-        console.log(err);
+        return err
     }
 
 }

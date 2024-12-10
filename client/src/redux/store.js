@@ -1,10 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userSignUp from './reducers/auth/userSignUp'
-import getUser from './reducers/users/getUser'
 import getAllProject from './reducers/projects/getAllProject'
 import getProjectCategory from './reducers/projects/getProjectCategory'
-import getProjectDetail from './reducers/projects/getProjectDetail'
-import updateProject from './reducers/projects/updateProject'
 import getAllStatus from './reducers/task/getAllStatus'
 import getAllPiority from './reducers/task/getAllPiority'
 import getAllTaskType from './reducers/task/getAllTaskType'
@@ -18,10 +15,7 @@ export const store = configureStore({
     userSignUp,
     getAllProject,
     callGetListProjectByPagination,
-    getUser,
     getProjectCategory,
-    getProjectDetail,
-    updateProject,
     getAllStatus,
     getAllPiority,
     getAllTaskType,

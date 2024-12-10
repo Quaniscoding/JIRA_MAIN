@@ -3,42 +3,33 @@ import * as React from "react";
 import {
   Avatar,
   Box,
-  Button,
   Chip,
   Divider,
   IconButton,
   Input,
-  LinearProgress,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   Typography,
-  Stack,
-  Collapse,
   GlobalStyles,
 } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
-import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import QuestionAnswerRoundedIcon from "@mui/icons-material/QuestionAnswerRounded";
-import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
 import SupportRoundedIcon from "@mui/icons-material/SupportRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import BrightnessAutoRoundedIcon from "@mui/icons-material/BrightnessAutoRounded";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { closeSidebar } from "../../utils/utils";
 import ColorModeSelect from "../shared-theme/ColorModeSelect.jsx";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DATA_PROJECT, DATA_USER, USER_LOGIN } from './../../utils/constant';
+import { getLocal } from "../../utils/config.js";
 export default function Sidebar() {
-  const [open, setOpen] = React.useState(false);
-  const [open2, setOpen2] = React.useState(false);
   const [reset, setReset] = React.useState(0);
   const location = useLocation();
   const navigate = useNavigate();
@@ -46,8 +37,6 @@ export default function Sidebar() {
     switch (location.pathname) {
       case '/dashboard':
         return 'dashboard';
-      case '/orders':
-        return 'orders';
       case '/messages':
         return 'messages';
       case '/tasks':
@@ -69,6 +58,7 @@ export default function Sidebar() {
     localStorage.removeItem(DATA_PROJECT);
     navigate("/login");
   };
+  const dataUser = getLocal(DATA_USER)
   const selectedItem = getSelectedItem();
   return (
     <Box
@@ -126,7 +116,7 @@ export default function Sidebar() {
         <IconButton color='primary' size='small'>
           <BrightnessAutoRoundedIcon />
         </IconButton>
-        <Typography variant='h6'>Deeplynet.</Typography>
+        <Typography variant='h6'>JIRA.</Typography>
         <ColorModeSelect sx={{ ml: "auto" }} />
       </Box>
       <Input
@@ -162,51 +152,13 @@ export default function Sidebar() {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton component='a' href='/orders'>
-              <ListItemIcon>
-                <ShoppingCartRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary='Orders' />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton onClick={() => setOpen(!open)}>
+            <ListItemButton href="/tasks" selected={selectedItem === 'tasks'}>
               <ListItemIcon>
                 <AssignmentRoundedIcon />
               </ListItemIcon>
               <ListItemText primary='Tasks' />
-              <KeyboardArrowDownIcon
-                sx={{
-                  transform: open ? "rotate(180deg)" : "none",
-                  transition: "transform 0.3s",
-                }}
-              />
             </ListItemButton>
           </ListItem>
-          <Collapse in={open} timeout='auto' unmountOnExit>
-            <List component='div' disablePadding>
-              <ListItem sx={{ pl: 2 }}>
-                <ListItemButton>
-                  <ListItemText primary='All tasks' />
-                </ListItemButton>
-              </ListItem>
-              <ListItem sx={{ pl: 2 }}>
-                <ListItemButton>
-                  <ListItemText primary='Backlog' />
-                </ListItemButton>
-              </ListItem>
-              <ListItem sx={{ pl: 2 }}>
-                <ListItemButton>
-                  <ListItemText primary='In progress' />
-                </ListItemButton>
-              </ListItem>
-              <ListItem sx={{ pl: 2 }}>
-                <ListItemButton>
-                  <ListItemText primary='Done' />
-                </ListItemButton>
-              </ListItem>
-            </List>
-          </Collapse>
           <ListItem disablePadding>
             <ListItemButton component='a' href='/messages'>
               <ListItemIcon>
@@ -216,39 +168,6 @@ export default function Sidebar() {
               <Chip label='4' color='primary' size='small' />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton onClick={() => setOpen2(!open2)}>
-              <ListItemIcon>
-                <GroupRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary='Users' />
-              <KeyboardArrowDownIcon
-                sx={{
-                  transform: open2 ? "rotate(180deg)" : "none",
-                  transition: "transform 0.3s",
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
-          <Collapse in={open2} timeout='auto' unmountOnExit>
-            <List component='div' disablePadding>
-              <ListItem sx={{ pl: 2 }}>
-                <ListItemButton>
-                  <ListItemText primary='My profile' />
-                </ListItemButton>
-              </ListItem>
-              <ListItem sx={{ pl: 2 }}>
-                <ListItemButton>
-                  <ListItemText primary='Create a new user' />
-                </ListItemButton>
-              </ListItem>
-              <ListItem sx={{ pl: 2 }}>
-                <ListItemButton>
-                  <ListItemText primary='Roles & permission' />
-                </ListItemButton>
-              </ListItem>
-            </List>
-          </Collapse>
         </List>
         <List>
           <ListItem disablePadding>
@@ -268,40 +187,19 @@ export default function Sidebar() {
             </ListItemButton>
           </ListItem>
         </List>
-        <Box
-          sx={{ p: 1, bgcolor: "warning.main", color: "warning.contrastText" }}
-        >
-          <Stack
-            direction='row'
-            justifyContent='space-between'
-            alignItems='center'
-          >
-            <Typography variant='body2'>Used space</Typography>
-            <IconButton size='small'>
-              <CloseRoundedIcon />
-            </IconButton>
-          </Stack>
-          <Typography variant='caption'>
-            Your team has used 80% of your available space. Need more?
-          </Typography>
-          <LinearProgress variant='determinate' value={80} sx={{ my: 1 }} />
-          <Button variant='contained' color='primary' fullWidth>
-            Upgrade plan
-          </Button>
-        </Box>
       </Box>
       <Divider />
       <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
         <Avatar
-          src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286'
+        src={dataUser.avatar}
           sx={{ border: "1px solid", width: 32, height: 32 }}
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
           <Typography variant='subtitle2' fontWeight='bold'>
-            Siriwat K.
+            {dataUser.username}
           </Typography>
           <Typography variant='caption' color='text.secondary'>
-            siriwatk@test.com
+          {dataUser.email}
           </Typography>
         </Box>
         <IconButton size='small' color='default' onClick={()=>handleLogout()}>

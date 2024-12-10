@@ -21,10 +21,10 @@ export default getAllPiority.reducer
 
 export const callGetListPiority = async (dispatch) => {
     try {
-        const apiGetProject = await http.get(`/piority/getPiority`)
-        dispatch(getlistPiority(apiGetProject.data.content));
+        const result = await http.get(`/piority/getPiority`)
+        dispatch(getlistPiority(result.data.content));
     } catch (err) {
-        console.log(err);
+       return err
     }
 
 }
