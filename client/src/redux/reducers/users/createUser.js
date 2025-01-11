@@ -1,22 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit'
 import { http } from '../../../utils/baseUrl';
-import { history } from '../../../utils/history';
-const initialState = {
 
-}
-const createUser = createSlice({
-    name: "createUser",
-    initialState,
-    reducers: {}
-});
-
-export const { } = createUser.actions
-
-export default createUser.reducer
-
-export const callCreateUser = (userLogin) => async () => {
+export const callCreateUser = (data) => async () => {
     try {
-        const result = await http.post("/Users/signup", userLogin)
+        const result = await http.post("/user/createUser", data)
         return { message: result.data.message }
     } catch (err) {
         return { message: err.response.data.message }

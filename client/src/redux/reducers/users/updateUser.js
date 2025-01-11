@@ -1,24 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit'
 import { http } from '../../../utils/baseUrl';
-import { history } from '../../../utils/history';
 
-const initialState = {
-
-}
-
-const updateUser = createSlice({
-    name: "updateUser",
-    initialState,
-    reducers: {}
-});
-
-export const { } = updateUser.actions
-
-export default updateUser.reducer
-export const callUpdateUser = (data) => async () => {
+export const callUpdateUser = (id, data) => async () => {
     try {
-        const result = await http.put("/Users/editUser", data)
-        history.push("/user")
+        const result = await http.put(`/user/updateUser/${id}`, data)
         return { isUpdate: true, message: result.data.message }
     } catch (err) {
         return { isUpdate: false, message: err.response.data.message }

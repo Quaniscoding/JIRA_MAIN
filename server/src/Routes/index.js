@@ -41,11 +41,11 @@ const createTask = require('./Task/createTask')
 const getTaskDetail = require('./Task/getTaskDetail')
 const updateTask = require('./Task/updateTask')
 const deleteTask = require('./Task/deletetask')
-const updateStatus = require('./task/updateTaskDetails')
-const updatePiority = require('./task/updateTaskDetails')
-const updateDescription = require('./task/updateTaskDetails')
-const updateTimeTracking = require('./task/updateTaskDetails')
-const updateEstimate = require('./task/updateTaskDetails');
+const updateStatus = require('./Task/updateTaskDetails')
+const updatePiority = require('./Task/updateTaskDetails')
+const updateDescription = require('./Task/updateTaskDetails')
+const updateTimeTracking = require('./Task/updateTaskDetails')
+const updateEstimate = require('./Task/updateTaskDetails');
 const getProjectByPagination = require('./Project/getProjectByPagination')
 const getProjectByUserId = require('./Project/getProjectByUserId')
 //token

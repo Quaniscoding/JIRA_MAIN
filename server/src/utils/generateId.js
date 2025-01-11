@@ -1,4 +1,4 @@
-const Counter = require('../models/Counter');
+const Counter = require('../Models/Counter');
 
 const generateId = async (name) => {
     try {
