@@ -10,7 +10,7 @@ module.exports = {
             name: "User"
         },
         {
-            name: "Piority"
+            name: "Priority"
         },
         {
             name: "Status"

@@ -4,7 +4,7 @@ const User = require('../../Models/User.model');
 const Project = require('../../Models/Project.model');
 const Status = require('../../Models/Status.model');
 const TaskType = require('../../Models/TaskType.model');
-const Piority = require('../../Models/Piority.model');
+const Priority = require('../../Models/Priority.model');
 const { failCode, successCode, errorCode } = require('../../config/reponse');
 const generateId = require('../../utils/generateId');
 
@@ -20,16 +20,16 @@ const createTask = async (req, res) => {
         projectId,
         reporterId,
         typeId,
-        piorityId
+        priorityId
     } = req.body;
     const id = await generateId('task');
     try {
         if (
-            taskName === undefined || 
-            originalEstimate === undefined || 
-            projectId === undefined || 
-            typeId === undefined || 
-            piorityId === undefined || 
+            taskName === undefined ||
+            originalEstimate === undefined ||
+            projectId === undefined ||
+            typeId === undefined ||
+            priorityId === undefined ||
             statusId === undefined
         ) {
             return failCode(res, "", "Missing required fields");
@@ -68,11 +68,11 @@ const createTask = async (req, res) => {
         }
         const typeName = type.taskType;
 
-        const piority = await Piority.findOne({ id: piorityId });
-        if (!piority) {
-            return failCode(res, "", "Piority does not exist");
+        const priority = await Priority.findOne({ id: priorityId });
+        if (!priority) {
+            return failCode(res, "", "Priority does not exist");
         }
-        const piorityName = piority.piority;
+        const priorityName = priority.priority;
 
         const newTask = await Task.create({
             id: id,
@@ -86,7 +86,7 @@ const createTask = async (req, res) => {
             projectId,
             reporterId,
             typeId: { id: typeId, taskType: typeName },
-            piorityId: { id: piorityId, piority: piorityName }
+            priorityId: { id: priorityId, priority: priorityName }
         });
         await Project.updateOne(
             { id: projectId, 'listTask.statusId': statusId },

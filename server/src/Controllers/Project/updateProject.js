@@ -6,17 +6,15 @@ const updateProject = async (req, res) => {
         const id = req.params.id;
         const options = { new: true };
         const { projectName, description, categoryId, alias } = req.body;
-        const result = await Project.findOneAndUpdate({id:id}, { projectName, description, categoryId, alias }, options).select("-_id")
+        const result = await Project.findOneAndUpdate({ id: id }, { projectName, description, categoryId, alias }, options).select("-_id")
         if (!result) {
-            failCode(res, "", "Project does not exist !");
+            failCode(res, "", "Dự án không tồn tại !");
             return;
         }
         else {
-            successCode(res, result, "Update Project success !")
+            successCode(res, result, "Cập nhật dự án thành công !")
         }
     } catch (error) {
-        console.log(error);
-        
         failCode(res, "Backend error !")
     }
 }

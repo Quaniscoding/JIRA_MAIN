@@ -1,6 +1,6 @@
 const Task = require('../../Models/Task.model');
 const Status = require('../../Models/Status.model');
-const Piority = require('../../Models/Piority.model');
+const Priority = require('../../Models/Priority.model');
 const { failCode, successCode, errorCode } = require('../../config/reponse');
 
 const updateStatus = async (req, res) => {
@@ -32,20 +32,20 @@ const updateStatus = async (req, res) => {
         return errorCode(res, "Backend error");
     }
 };
-const updatePiority = async (req, res) => {
-    const { taskId, piorityId } = req.body;
+const updatePriority = async (req, res) => {
+    const { taskId, priorityId } = req.body;
 
     try {
-        // Check if the piority exists
-        const piorityExist = await Piority.findOne({ id: piorityId });
-        if (!piorityExist) {
-            return failCode(res, "", "Piority does not exist");
+        // Check if the priority exists
+        const priorityExist = await Priority.findOne({ id: priorityId });
+        if (!priorityExist) {
+            return failCode(res, "", "Priority does not exist");
         }
 
-        // Find the task by its id and update its piority
+        // Find the task by its id and update its priority
         const updatedTask = await Task.findOneAndUpdate(
             { id: taskId },
-            { piorityId },
+            { priorityId },
             { new: true }
         );
 
@@ -54,8 +54,8 @@ const updatePiority = async (req, res) => {
             return failCode(res, "", "Task not found");
         }
 
-        // Return a success response indicating that the piority was updated
-        return successCode(res, "Update task successfully!", "Piority updated successfully");
+        // Return a success response indicating that the priority was updated
+        return successCode(res, "Update task successfully!", "Priority updated successfully");
     } catch (error) {
         console.error(error);
         return errorCode(res, "Backend error");
@@ -136,4 +136,4 @@ const updateEstimate = async (req, res) => {
         return errorCode(res, "Backend error");
     }
 };
-module.exports = { updateStatus, updatePiority, updateDescription, updateTimeTracking, updateEstimate };
+module.exports = { updateStatus, updatePriority, updateDescription, updateTimeTracking, updateEstimate };

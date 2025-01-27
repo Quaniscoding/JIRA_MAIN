@@ -125,16 +125,16 @@ module.exports = {
                     }
                 }
             },
-            "UpdatePiority": {
+            "UpdatePriority": {
                 "type": "object",
                 "properties": {
                     "taskId": {
                         "type": "string",
                         "description": "The ID of the task"
                     },
-                    "piorityId": {
+                    "priorityId": {
                         "type": "string",
-                        "description": "The ID of the new piority for the task"
+                        "description": "The ID of the new priority for the task"
                     }
                 }
             },
@@ -230,9 +230,9 @@ module.exports = {
                         "type": "string",
                         "description": "The ID of the type of the task"
                     },
-                    "piorityId": {
+                    "priorityId": {
                         "type": "string",
-                        "description": "The ID of the piority of the task"
+                        "description": "The ID of the priority of the task"
                     }
                 }
             },
@@ -286,9 +286,9 @@ module.exports = {
                         "type": "string",
                         "description": "The ID of the type of the task"
                     },
-                    "piorityId": {
+                    "priorityId": {
                         "type": "string",
-                        "description": "The ID of the piority of the task"
+                        "description": "The ID of the priority of the task"
                     }
                 }
             },
@@ -313,7 +313,7 @@ module.exports = {
                     }
                 }
             },
-            "UserModel":{
+            "UserModel": {
                 "type": "object",
                 "properties": {
                     "username": {
@@ -342,11 +342,11 @@ module.exports = {
                     },
                 }
             },
-            "RefreshToken":{
+            "RefreshToken": {
                 "type": "object",
                 "properties": {
-                    "token":{
-                        "type":"string"
+                    "token": {
+                        "type": "string"
                     }
                 }
             },

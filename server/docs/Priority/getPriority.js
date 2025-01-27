@@ -1,8 +1,8 @@
 module.exports = {
-    "/api/piority/getPiority": {
+    "/api/priority/getPriority": {
         get: {
-            tags: ["Piority"],
-            "operationId": "getPiority",
+            tags: ["Priority"],
+            "operationId": "getPriority",
             "consumes": [
                 "application/json-patch+json",
                 "application/json",

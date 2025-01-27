@@ -2,7 +2,7 @@ const express = require('express'),
   swaggerJsdoc = require("swagger-jsdoc"),
   swaggerUi = require("swagger-ui-express");
 const createError = require('http-errors');
-const dotenv = require('dotenv').config();
+require('dotenv').config();
 const { SwaggerTheme, SwaggerThemeNameEnum } = require('swagger-themes');
 const app = express();
 const cors = require('cors');
@@ -33,8 +33,8 @@ const { "/api/getUser/getUserByPagination?{pageIndex}?{pageSize}?{keyword}": get
 const { "/api/createUser": createUser } = require("../../docs/User/createUser.js");
 const { "/api/deleteUser/{id}": deleteUser } = require("../../docs/User/deleteUser.js");
 const { "/api/updateUser/{id}": updateUser } = require("../../docs/User/updateUser.js");
-//piority
-const { "/api/piority/getPiority": getPiority } = require("../../docs/Piority/getPiority.js")
+//priority
+const { "/api/priority/getPriority": getPriority } = require("../../docs/Priority/getPriority.js")
 //status
 const { "/api/status/getStatus": getStatus } = require("../../docs/Status/getStatus.js")
 //tasktype
@@ -78,8 +78,8 @@ const options = {
       "/api/user/createUser": createUser,
       "/api/user/updateUser/{id}": updateUser,
       "/api/user/deleteUser/{id}": deleteUser,
-      //piority
-      "/api/piority/getPiority": getPiority,
+      //priority
+      "/api/priority/getPriority": getPriority,
       //status
       "/api/status/getStatus": getStatus,
       //taskType

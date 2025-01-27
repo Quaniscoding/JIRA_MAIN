@@ -5,7 +5,7 @@ const { failCode, successCode } = require('../../config/reponse');
 const getUserByProjectId = async (req, res) => {
     const projectId = req.params.projectId;
     try {
-        const project = await Project.findById(projectId);
+        const project = await Project.findOne({ id: projectId });
         if (!project) {
             return failCode(res, "", "Không tìm thấy dự án");
         }
@@ -19,7 +19,6 @@ const getUserByProjectId = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
         failCode(res, "Backend error !")
     }
 }

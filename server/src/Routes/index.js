@@ -1,4 +1,5 @@
 const express = require('express');
+const rootRoute = express.Router();
 
 //comment
 const getComment = require('./Comment/getComment')
@@ -16,9 +17,9 @@ const createUser = require('./User/createUser')
 const updateUser = require('./User/updateUser')
 const getUserByProjectId = require('./User/getUserByProjectId');
 const getUserByPagination = require('./User/getUserByPagination')
-//piority
-const getPiority = require('./Piority/getPiority')
-const createPiority = require('./Piority/createPiority')
+//priority
+const getPriority = require('./Priority/getPriority')
+const createPriority = require('./Priority/createPriority')
 //projectCategory
 const getProjectCategory = require('./ProjectCategory/getProjectCategory')
 const createProjectCategory = require('./ProjectCategory/createProjectCategory')
@@ -28,7 +29,6 @@ const createStatus = require('./Status/createStatus')
 //TaskType
 const getTaskType = require('./TaskType/getTaskType')
 const createTaskType = require('./TaskType/createTaskType')
-const rootRoute = express.Router();
 //Project
 const createProject = require('./Project/createProject')
 const getProjectDetail = require('./Project/getProjectDetail')
@@ -42,7 +42,7 @@ const getTaskDetail = require('./Task/getTaskDetail')
 const updateTask = require('./Task/updateTask')
 const deleteTask = require('./Task/deletetask')
 const updateStatus = require('./Task/updateTaskDetails')
-const updatePiority = require('./Task/updateTaskDetails')
+const updatePriority = require('./Task/updateTaskDetails')
 const updateDescription = require('./Task/updateTaskDetails')
 const updateTimeTracking = require('./Task/updateTaskDetails')
 const updateEstimate = require('./Task/updateTaskDetails');
@@ -56,7 +56,7 @@ rootRoute.use('/auth', signUp)
 rootRoute.use('/auth', signIn)
 //comment
 rootRoute.use('/comment', getComment)
-// rootRoute.use('/comment', createComment)
+rootRoute.use('/comment', createComment)
 rootRoute.use('/comment', deleteComment)
 rootRoute.use('/comment', updateComment)
 //user
@@ -68,9 +68,9 @@ rootRoute.use('/user', searchUser)
 rootRoute.use('/user', createUser)
 rootRoute.use('/user', updateUser)
 rootRoute.use('/user', getUserByPagination)
-//piority
-rootRoute.use('/piority', getPiority)
-rootRoute.use('/piority', createPiority)
+//priority
+rootRoute.use('/priority', getPriority)
+rootRoute.use('/priority', createPriority)
 //projectCategory
 rootRoute.use('/projectCategory', getProjectCategory)
 rootRoute.use('/projectCategory', createProjectCategory)
@@ -97,9 +97,9 @@ rootRoute.use('/project', updateTask);
 rootRoute.use('/project', deleteTask);
 rootRoute.use('/project', getProjectByPagination)
 rootRoute.use('/project', updateStatus);
-rootRoute.use('/project', updatePiority);
+rootRoute.use('/project', updatePriority);
 rootRoute.use('/project', updateDescription);
 rootRoute.use('/project', updateTimeTracking);
 rootRoute.use('/project', updateEstimate);
-rootRoute.use('/project',getProjectByUserId)
+rootRoute.use('/project', getProjectByUserId)
 module.exports = rootRoute;

@@ -1,14 +1,14 @@
 
-const Piority = require('../../Models/Piority.model');
+const Priority = require('../../Models/Priority.model');
 const { failCode, successCode, errorCode } = require('../../config/reponse');
 const generateId = require('../../utils/generateId');
 
-const createPiority = async (req, res) => {
-    const { piority, description, deleted, alias } = req.body;
-    const id = generateId("piorityId")
+const createPriority = async (req, res) => {
+    const { priority, description, deleted, alias } = req.body;
+    const id = generateId("priorityId")
     try {
-        const result = await Piority.create({
-            id: id, piority: piority, description: description, deleted: deleted, alias: alias
+        const result = await Priority.create({
+            id: id, priority: priority, description: description, deleted: deleted, alias: alias
         })
         if (result == "") {
             failCode(res, "", "Create fail!")
@@ -21,4 +21,4 @@ const createPiority = async (req, res) => {
     }
 
 }
-module.exports = { createPiority }
+module.exports = { createPriority }

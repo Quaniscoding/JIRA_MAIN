@@ -1,5 +1,5 @@
 const User = require('../../Models/User.model');
-const { successCodeLogin, failCode } = require('../../config/reponse');
+const { successCodeLogin, failCode, errorCodeNew } = require('../../config/reponse');
 const bcrypt = require('bcrypt');
 
 const signIn = async (req, res) => {
@@ -18,7 +18,7 @@ const signIn = async (req, res) => {
             failCode(res, "", "Tài khoản không tồn tại!");
         }
     } catch (error) {
-        failCode(res, "Backend error !");
+        errorCodeNew(res, "Backend error !");
     }
 };
 

@@ -8,7 +8,7 @@ const CommentSchema = new Schema({
     unique: true
   },
   userId: {
-    type:Number,
+    type: Number,
     ref: "User",
     required: true,
   },
@@ -42,7 +42,7 @@ const TaskSchema = new Schema(
     projectId: { type: Number, ref: "Project", required: true },
     reporterId: { type: Number, ref: "User" },
     typeId: { type: Object, ref: "TaskType" },
-    piorityId: { type: Object, ref: "Piority" },
+    priorityId: { type: Object, ref: "Priority" },
     listComment: [CommentSchema],
   },
   {
