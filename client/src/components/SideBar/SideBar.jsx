@@ -80,7 +80,7 @@ export default function Sidebar() {
   };
   const dataUser = getLocal(DATA_USER)
   const handleToggleSubmenu = () => {
-    if (dataUser.role === "admin") {
+    if (dataUser?.role === "admin") {
       setOpenSubmenu((prev) => !prev);
     } else {
       setSnackbar({
@@ -183,7 +183,7 @@ export default function Sidebar() {
               <ListItemText primary='Dashboard' />
             </ListItemButton>
           </ListItem>
-          {dataUser.role === 'admin'}
+          {dataUser?.role === 'admin'}
           <ListItem disablePadding>
             <ListItemButton onClick={handleToggleSubmenu}>
               <ListItemIcon>
@@ -228,15 +228,15 @@ export default function Sidebar() {
       <Divider />
       <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
         <Avatar
-          src={dataUser.avatar}
+          src={dataUser?.avatar}
           sx={{ border: "1px solid", width: 32, height: 32 }}
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
           <Typography variant='subtitle2' fontWeight='bold'>
-            {dataUser.username}
+            {dataUser?.username}
           </Typography>
           <Typography variant='caption' color='text.secondary'>
-            {dataUser.email}
+            {dataUser?.email}
           </Typography>
         </Box>
         <IconButton size='small' color='default' onClick={() => handleLogout()}>

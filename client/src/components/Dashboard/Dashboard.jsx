@@ -2,31 +2,23 @@ import { Box, Breadcrumbs, Link } from "@mui/material";
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import DashboardTable from "./Table/DashboardTable";
-import DashboardList from "./List/DashboardList";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { callGetListProjectByPagination } from "../../redux/reducers/projects/getProjectByPagination";
 import CircularProgressWithLabel from "../CircularProgressWithLabel/CircularProgressWithLabel";
+import { callGetListProject } from "../../redux/reducers/projects/getAllProject";
+import { callGetListProjectByPagination } from "../../redux/reducers/projects/getProjectByPagination";
 
 export default function Dashboard() {
     const dispatch = useDispatch();
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
-    const [pageSize, setPagesize] = useState(10);
-    const [pageIndex, setpageIndex] = useState(1);
-
-    const listProjectByPagination = useSelector(
-        (state) => state.callGetListProjectByPagination.listProjectByPagination
-    );
-
-    const pageCount = listProjectByPagination?.pageCount || 0;
-    const listProject = listProjectByPagination?.result || [];
-
+    const [listProject, setListProject] = useState([]);
     const [progress, setProgress] = useState(0);
     const [loading, setLoading] = useState(false);
-
-     // Debounce searchQuery
-     useEffect(() => {
+    const [pageSize, setPageSize] = useState(10);
+    const [pageIndex, setPageIndex] = useState(1);
+    const [sort, setSort] = useState('asc');
+    useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearchQuery(searchQuery);
         }, 500); // Độ trễ debounce, 500ms là khoảng thời gian chờ trước khi cập nhật
@@ -36,7 +28,7 @@ export default function Dashboard() {
         };
     }, [searchQuery]);
     useEffect(() => {
-        let isMounted = true; 
+        let isMounted = true;
         async function fetchData() {
             setLoading(true);
             setProgress(15);
@@ -45,8 +37,8 @@ export default function Dashboard() {
                     await new Promise((resolve) => setTimeout(resolve, 100)); // Giả lập tiến trình
                     if (isMounted) setProgress(i);
                 }
-
-                await dispatch(callGetListProjectByPagination(pageSize, pageIndex, debouncedSearchQuery));
+                const rs = await dispatch(callGetListProjectByPagination(pageSize, pageIndex, debouncedSearchQuery, sort));
+                if (rs) setListProject(rs);
                 if (isMounted) setProgress(100);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -63,7 +55,7 @@ export default function Dashboard() {
         return () => {
             isMounted = false; // Cleanup khi component unmount
         };
-    }, [dispatch, debouncedSearchQuery, pageIndex, pageSize]);
+    }, [dispatch, debouncedSearchQuery, pageSize, pageIndex, sort]);
 
     return (
         <Box
@@ -114,16 +106,16 @@ export default function Dashboard() {
                     </Link>
                 </Breadcrumbs>
             </Box>
-
             <DashboardTable
                 listProject={listProject}
-                pageSize={pageSize}
-                pageIndex={pageIndex}
-                setpageIndex={setpageIndex}
-                setPagesize={setPagesize}
-                pageCount={pageCount}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
+                pageSize={pageSize}
+                setPageSize={setPageSize}
+                setPageIndex={setPageIndex}
+                pageIndex={pageIndex}
+                sort={sort}
+                setSort={setSort}
             />
         </Box>
     );

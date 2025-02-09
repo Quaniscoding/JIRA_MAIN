@@ -26,7 +26,7 @@ import { callGetListProjectByUserId } from './../../../redux/reducers/projects/g
 import { getLocal } from "../../../utils/config";
 import { DATA_USER } from "../../../utils/constant";
 import { callGetListStatus } from "../../../redux/reducers/task/getAllStatus";
-import { callGetListPiority } from "../../../redux/reducers/task/getAllPiority";
+import { callGetListPriority } from "../../../redux/reducers/task/getAllPriority";
 import { callGetListTaskType } from "../../../redux/reducers/task/getAllTaskType";
 import { callGetListUser } from './../../../redux/reducers/users/getUser';
 import { callCreateTask } from './../../../redux/reducers/task/createTask';
@@ -51,7 +51,7 @@ export default function CreateTaskModal({
         timeTrackingSpent: "",
         timeTrackingRemaining: "",
         typeId: "",
-        piorityId: "",
+        priorityId: "",
         listUserAssign: [],
     });
     const [listUser, setListUser] = React.useState([]);
@@ -65,7 +65,7 @@ export default function CreateTaskModal({
 
     // Selectors
     const listStatus = useSelector((state) => state.getAllStatus.listStatus);
-    const listPiority = useSelector((state) => state.getAllPiority.listPiority);
+    const listPriority = useSelector((state) => state.getAllPriority.listPriority);
     const listTaskType = useSelector((state) => state.getAllTaskType.listTaskType);
     // Fetch projects by user ID
     useEffect(() => {
@@ -88,7 +88,7 @@ export default function CreateTaskModal({
     useEffect(() => {
         const fetchData = async () => {
             await dispatch(callGetListTaskType);
-            await dispatch(callGetListPiority);
+            await dispatch(callGetListPriority);
             await dispatch(callGetListStatus);
             const result = await dispatch(callGetListUser());
             if (result.result) {
@@ -185,8 +185,8 @@ export default function CreateTaskModal({
             newErrors.typeId = "Task type is required";
         }
 
-        if (formValues.piorityId === undefined || formValues.piorityId === null || formValues.piorityId === "") {
-            newErrors.piorityId = "Priority is required";
+        if (formValues.priorityId === undefined || formValues.priorityId === null || formValues.priorityId === "") {
+            newErrors.priorityId = "Priority is required";
         }
 
         if (formValues.listUserAssign.length === 0) {
@@ -242,7 +242,7 @@ export default function CreateTaskModal({
                             timeTrackingSpent: "",
                             timeTrackingRemaining: "",
                             typeId: "",
-                            piorityId: "",
+                            priorityId: "",
                             listUserAssign: [],
                         });
                         setOpenDrawerCreateTask(false);
@@ -432,22 +432,22 @@ export default function CreateTaskModal({
                             ))}
                         </TextField>
                     </Grid>
-                    {/* Piority */}
+                    {/* Priority */}
                     <Grid item xs={12}>
                         <TextField
-                            name='piorityId'
-                            label='Piority'
+                            name='priorityId'
+                            label='Priority'
                             variant='outlined'
                             select
                             fullWidth
-                            value={formValues.piorityId}
+                            value={formValues.priorityId}
                             onChange={handleChange}
-                            error={!!errors.piorityId}
-                            helperText={errors.piorityId}
+                            error={!!errors.priorityId}
+                            helperText={errors.priorityId}
                         >
-                            {listPiority.map(pio => (
+                            {listPriority.map(pio => (
                                 <MenuItem key={pio.id} value={pio.id}>
-                                    {pio.piority}
+                                    {pio.priority}
                                 </MenuItem>
                             ))}
                         </TextField>

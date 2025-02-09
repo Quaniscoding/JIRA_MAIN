@@ -46,7 +46,7 @@ export default function CreateProjectModal({
         setSnackbar({ ...snackbar, open: false });
     };
     const handleChange = e => {
-        const { name, value } = e.target;        
+        const { name, value } = e.target;
         setFormValues(prevValues => ({
             ...prevValues,
             [name]: value,
@@ -77,32 +77,32 @@ export default function CreateProjectModal({
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         let isMounted = true;
         setLoading(true);
-    
+
         if (!validateForm()) {
             setLoading(false);
             return;
         }
         try {
             const result = await dispatch(callCreateProject(formValues));
-    
+
             if (result.isCreate) {
                 for (let i = 15; i <= 90; i += 15) {
                     if (!isMounted) return;
                     await new Promise((resolve) => setTimeout(resolve, 100));
                     setProgress(i);
                 }
-    
+
                 if (isMounted) setProgress(100);
-    
+
                 setSnackbar({
                     open: true,
                     message: result.message,
                     severity: "success",
                 });
-    
+
                 setTimeout(() => {
                     if (isMounted) {
                         setFormValues({
@@ -115,7 +115,7 @@ export default function CreateProjectModal({
                         setProgress(0);
                     }
                 }, 3000);
-                await dispatch(callGetListProjectByPagination(10,1,""));
+                await dispatch(callGetListProjectByPagination(10, 1, "", ""));
             } else {
                 setSnackbar({
                     open: true,
@@ -135,12 +135,12 @@ export default function CreateProjectModal({
                 setTimeout(() => setProgress(0), 500);
             }
         }
-    
+
         return () => {
             isMounted = false;
         };
     };
-    
+
     return (
         <SwipeableDrawer
             anchor='right'
@@ -151,15 +151,15 @@ export default function CreateProjectModal({
             {loading && (
                 <Box
                     sx={{
-                        position: "fixed", 
+                        position: "fixed",
                         top: 0,
                         left: 0,
                         width: "100%",
                         height: "100%",
                         display: "flex",
-                        justifyContent: "center", 
+                        justifyContent: "center",
                         alignItems: "center",
-                        zIndex: 1300, 
+                        zIndex: 1300,
                     }}
                 >
                     <CircularProgressWithLabel value={progress} />

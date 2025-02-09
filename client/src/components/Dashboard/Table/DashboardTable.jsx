@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from "react";
 import {
     Avatar,
     Box,
@@ -31,6 +32,7 @@ import {
     ListItemIcon,
     Tooltip,
     AvatarGroup,
+    Pagination,
 } from '@mui/material';
 import {
     FilterAlt as FilterAltIcon,
@@ -40,25 +42,24 @@ import {
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import CreateProjectModal from '../Modal/CreateProjectModal';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { callDeleteProject } from './../../../redux/reducers/projects/deleteProject';
 import { callGetListProject } from '../../../redux/reducers/projects/getAllProject';
 import CustomSnackbar from '../../CustomSnackbar/CustomSnackbar';
 import { callGetListUser } from '../../../redux/reducers/users/getUser';
-import { callAsignUserFromProject } from './../../../redux/reducers/users/asignUserFromProject';
-import { callGetListProjectByPagination } from '../../../redux/reducers/projects/getProjectByPagination';
+import { callAsignUserProject } from '../../../redux/reducers/users/asignUserProject';
 import EditProjectModal from '../Modal/EditProjectModal';
 import CreateTaskModal from '../Modal/CreateTaskModal';
 import { useNavigate } from 'react-router-dom';
-function RowMenu({ projectId, setSnackbar, pageSize, pageIndex, toggleDrawer2 }) {
-    const [anchorEl, setAnchorEl] = React.useState(null);
+import { useEffect } from 'react';
+import AddIcon from "@mui/icons-material/Add";
+import StringAvatar from '../../StringAvatar/StringAvatar.jsx';
+import { callGetListProjectByPagination } from '../../../redux/reducers/projects/getProjectByPagination.js';
+function RowMenu({ projectId, setSnackbar, toggleDrawer2 }) {
+    const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
-    const [openAddUser, setOpenAddUser] = React.useState(false);
-    const [openConfirm, setOpenConfirm] = React.useState(false);
-    const [listUser, setListUser] = React.useState([]);
-    const [selectedUsers, setSelectedUsers] = React.useState([]);
+    const [openConfirm, setOpenConfirm] = useState(false);
     const dispatch = useDispatch();
-    const navigate = useNavigate()
     const handleOpenConfirm = () => {
         setOpenConfirm(true);
     }
@@ -66,24 +67,6 @@ function RowMenu({ projectId, setSnackbar, pageSize, pageIndex, toggleDrawer2 })
         setOpenConfirm(false);
         setAnchorEl(null);
     }
-    const handleOpenAddUser = () => {
-        setOpenAddUser(true);
-    }
-    const handleCloseAddUser = () => {
-        setOpenAddUser(false);
-        setAnchorEl(null);
-        setSelectedUsers([]);
-    }
-
-    React.useEffect(() => {
-        const fetchListUser = async () => {
-            const result = await dispatch(callGetListUser());
-            if (result.result) {
-                setListUser(result.result);
-            }
-        };
-        fetchListUser();
-    }, [dispatch]);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -91,70 +74,24 @@ function RowMenu({ projectId, setSnackbar, pageSize, pageIndex, toggleDrawer2 })
         setAnchorEl(null);
     };
 
-    const handleToggleUser = (userId) => {
-        setSelectedUsers((prev) =>
-            prev.includes(userId)
-                ? prev.filter((id) => id !== userId) // Bỏ chọn nếu đã chọn trước đó
-                : [...prev, userId] // Thêm vào danh sách nếu chưa chọn
-        );
-    };
     const handleDelete = async () => {
         const result = await dispatch(callDeleteProject(projectId));
         if (result.isDelete) {
-            await dispatch(callGetListProjectByPagination(pageSize, pageIndex, ""))
+            await dispatch(callGetListProject(""))
             setSnackbar({
                 open: true,
-                message: result.message,
+                message: "Delete project successfully!",
                 severity: "success",
             });
         }
         else {
             setSnackbar({
                 open: true,
-                message: result.message,
+                message: "Delete project failed!",
                 severity: "error",
             });
         }
         setAnchorEl(null);
-    };
-    const handleAssignUserToProject = async () => {
-        if (selectedUsers.length === 0) {
-            setSnackbar({
-                open: true,
-                message: "Please select at least one user to assign.",
-                severity: "warning",
-            });
-            return;
-        }
-
-        let successCount = 0;
-        let errorCount = 0;
-        for (const userId of selectedUsers) {
-            const result = await dispatch(callAsignUserFromProject({ projectId, userId }));
-            if (result) {
-                successCount++;
-            } else {
-                errorCount++;
-            }
-        }
-        if (successCount > 0) {
-            await dispatch(callGetListProjectByPagination(pageSize, pageIndex, ""))
-            setSnackbar({
-                open: true,
-                message: `${successCount} user(s) assigned successfully.`,
-                severity: "success",
-            });
-        }
-
-        if (errorCount > 0) {
-            setSnackbar({
-                open: true,
-                message: `${errorCount} user(s) failed to be assigned.`,
-                severity: "error",
-            });
-        }
-
-        handleCloseAddUser();
     };
     return (
         <>
@@ -211,174 +148,14 @@ function RowMenu({ projectId, setSnackbar, pageSize, pageIndex, toggleDrawer2 })
                     </DialogActions>
                 </Dialog>
                 <Divider />
-                <MenuItem onClick={()=>navigate(`/projectDetails/${projectId}`)}>Project details</MenuItem>
-                <MenuItem onClick={handleOpenAddUser}>Assign user to project</MenuItem>
-                <Dialog open={openAddUser} onClose={handleCloseAddUser}>
-                    <DialogTitle>Add users to project</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            Select users from the list below to assign to this project.
-                        </DialogContentText>
-                        <List sx={{ maxHeight: 300, overflowY: 'auto' }}>
-                            {listUser.map((user) => (
-                                <ListItem key={user.id} button onClick={() => handleToggleUser(user.id)} sx={{ cursor: "pointer" }}>
-                                    <ListItemIcon>
-                                        <Checkbox
-                                            edge="start"
-                                            checked={selectedUsers.includes(user.id)}
-                                            tabIndex={-1}
-                                            disableRipple
-                                        />
-                                    </ListItemIcon>
-                                    <ListItemText primary={user.username} secondary={user.email} />
-                                </ListItem>
-                            ))}
-                        </List>
-
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleCloseAddUser} color="primary">
-                            Cancel
-                        </Button>
-                        <Button onClick={handleAssignUserToProject} color="secondary">
-                            Assign
-                        </Button>
-                    </DialogActions>
-                </Dialog>
             </Menu>
         </>
     );
 }
 
-function Pagination({ setpageIndex, pageCount }) {
-    const [pageIndex, setPageIndexState] = React.useState(1);
-
-    const handlePageClick = (page) => {
-        if (typeof page === 'number') {
-            setPageIndexState(page);
-            setpageIndex(page);
-        }
-    };
-
-    const handlePrevious = () => {
-        setPageIndexState((prev) => {
-            const newIndex = Math.max(prev - 1, 1);
-            setpageIndex(newIndex);
-            return newIndex;
-        });
-    };
-
-    const handleNext = () => {
-        setPageIndexState((prev) => {
-            const newIndex = Math.min(prev + 1, pageCount);
-            setpageIndex(newIndex);
-            return newIndex;
-        });
-    };
-
-    return (
-        <Box
-            sx={{
-                pt: 2,
-                pb: 2,
-                gap: 1,
-                '& .MuiIconButton-root': { borderRadius: '50%' },
-                display: {
-                    xs: 'none',
-                    md: 'flex',
-                },
-            }}
-        >
-            <Button
-                size="small"
-                variant="outlined"
-                color="inherit"
-                startIcon={<KeyboardArrowLeftIcon />}
-                onClick={handlePrevious}
-            >
-                Previous
-            </Button>
-
-            <Box sx={{ flex: 1 }} />
-            {Array.from({ length: pageCount }, (_, index) => index + 1).map((page) => (
-                <IconButton
-                    key={page}
-                    size="small"
-                    variant={pageIndex === page ? 'contained' : 'outlined'}
-                    color={pageIndex === page ? 'primary' : 'inherit'}
-                    onClick={() => handlePageClick(page)}
-                    sx={{
-                        bgcolor: pageIndex === page ? 'primary.main' : 'transparent',
-                        color: pageIndex === page ? 'white' : 'inherit',
-                        '&:hover': {
-                            bgcolor: pageIndex === page ? 'primary.dark' : 'action.hover',
-                        },
-                        width: {
-                            md: "30px"
-                        },
-                        height: {
-                            md: "30px"
-                        }
-                    }}
-                >
-                    {page}
-                </IconButton>
-            ))}
-            <Box sx={{ flex: 1 }} />
-            <Button
-                size="small"
-                variant="outlined"
-                color="inherit"
-                endIcon={<KeyboardArrowRightIcon />}
-                onClick={handleNext}
-            >
-                Next
-            </Button>
-        </Box>
-    );
-}
-function stringToColor(string) {
-    let hash = 0;
-    let i;
-
-    /* eslint-disable no-bitwise */
-    for (i = 0; i < string.length; i += 1) {
-        hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    let color = '#';
-
-    for (i = 0; i < 3; i += 1) {
-        const value = (hash >> (i * 8)) & 0xff;
-        color += `00${value.toString(16)}`.slice(-2);
-    }
-    /* eslint-enable no-bitwise */
-
-    return color;
-}
-function stringAvatar(name) {
-    if (name) {
-        const nameParts = name?.split(' ');
-        const initials = nameParts
-            .slice(0, 2)
-            .map(part => part[0].toUpperCase())
-            .join('');
-
-        return {
-            sx: {
-                bgcolor: stringToColor(name),
-            },
-            children: initials,
-        };
-    }
-    return null;
-}
-
-
 // eslint-disable-next-line react/prop-types
-function MainTable({ listProject, pageSize, pageIndex, toggleDrawer2 }) {
-    const [selected, setSelected] = React.useState([]);
-    const [snackbar, setSnackbar] = React.useState({
+function MainTable({ listProject, toggleDrawer2 }) {
+    const [snackbar, setSnackbar] = useState({
         open: false,
         message: "",
         severity: "success",
@@ -386,78 +163,85 @@ function MainTable({ listProject, pageSize, pageIndex, toggleDrawer2 }) {
     const handleCloseSnackbar = () => {
         setSnackbar({ ...snackbar, open: false });
     };
-    const categories = [
-        { id: 0, name: "Dự án phần mềm" },
-        { id: 1, name: "Dự án web" },
-        { id: 2, name: "Dự án di động" },
-    ];
+
+    const navigate = useNavigate()
     return (
-        <Paper sx={{ mt: 2, overflow: 'auto', minHeight: "750px" }}>
+        <Paper
+            sx={{
+                mt: 2,
+                overflow: 'auto',
+                minHeight: { xs: "400px", sm: "750px" }, // Chiều cao tối thiểu thay đổi theo màn hình
+                boxShadow: 3,
+                borderRadius: 2,
+            }}
+        >
             <Table stickyHeader>
-                <TableHead sx={{ bgcolor: "background-default" }}>
-                    <TableRow>
-                        <TableCell padding="checkbox">
-                            <Checkbox
-                                indeterminate={
-                                    selected.length > 0 && selected.length !== listProject.length
-                                }
-                                checked={selected?.length === listProject?.length}
-                                onChange={(event) => {
-                                    setSelected(event.target.checked ? listProject.map((row) => row.id) : []);
-                                }}
-                            />
+                <TableHead>
+                    <TableRow sx={{ bgcolor: "primary.main" }}>
+                        <TableCell sx={{ fontWeight: "bold" }}>ID</TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }}>Project name</TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }}>Creator</TableCell>
+                        <TableCell sx={{ fontWeight: "bold", display: { xs: "none", sm: "table-cell" } }}>
+                            Description
                         </TableCell>
-                        <TableCell>ID</TableCell>
-                        <TableCell>Project name</TableCell>
-                        <TableCell>Creator</TableCell>
-                        <TableCell>Description</TableCell>
-                        <TableCell>Members</TableCell>
-                        <TableCell>Category</TableCell>
+                        <TableCell sx={{ fontWeight: "bold" }}>Members</TableCell>
+                        <TableCell sx={{ fontWeight: "bold", display: { xs: "none", md: "table-cell" } }}>
+                            Category
+                        </TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {/* eslint-disable-next-line react/prop-types */}
                     {listProject?.map((row) => (
-                        <TableRow key={row.id}>
-                            <TableCell padding="checkbox">
-                                <Checkbox
-                                    checked={selected.includes(row.id)}
-                                    onChange={(event) => {
-                                        if (event.target.checked) {
-                                            setSelected((prev) => [...prev, row.id]);
-                                        } else {
-                                            setSelected((prev) => prev.filter((id) => id !== row.id));
-                                        }
+                        <TableRow
+                            key={row.id}
+                            sx={{
+                                "&:nth-of-type(odd)": {
+                                    bgcolor: "grey.50", // Màu nền xen kẽ
+                                },
+                                "&:hover": {
+                                    bgcolor: "grey.100", // Hiệu ứng hover
+                                },
+                            }}
+                        >
+                            <TableCell>{row.id}</TableCell>
+                            <TableCell>
+                                <a
+                                    className="pointer-event"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        navigate(`/projectDetails/${row.id}`);
                                     }}
+                                    href="#"
+                                    style={{
+                                        cursor: "pointer",
+                                        textDecoration: "none",
+                                        color: "primary.main",
+                                        fontWeight: 500,
+                                    }}
+                                >
+                                    {row.projectName}
+                                </a>
+                            </TableCell>
+                            <TableCell>{row.creator.username}</TableCell>
+                            <TableCell sx={{ display: { xs: "none", sm: "table-cell" } }}>
+                                {row.description}
+                            </TableCell>
+                            <TableCell sx={{ display: "flex" }}>
+                                <HandleAssignUserToProject
+                                    row={row}
+                                    projectId={row.id}
+                                    setSnackbar={setSnackbar}
                                 />
                             </TableCell>
-                            <TableCell>{row.id}</TableCell>
-                            <TableCell>{row.projectName}</TableCell>
-                            <TableCell>{row.creator.username}</TableCell>
-                            <TableCell>{row.description}</TableCell>
-                            <TableCell sx={{
-                                display: "flex",
-                            }}>
-                                <AvatarGroup max={4} spacing={"medium"}>
-                                    {row.members && row.members.length > 0 ? row.members.map(user => (
-                                        <Tooltip key={user.id} title={user?.username}>
-                                            <Avatar {...stringAvatar(user?.username)} />
-                                        </Tooltip>
-                                    )) : null}
-                                </AvatarGroup>
+                            <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
+                                {row.projectCategoryName}
                             </TableCell>
-                            <TableCell>
-                                {categories.find(category => category.id === row.categoryId)?.name}
-                            </TableCell>
-
                             <TableCell>
                                 <RowMenu
                                     projectId={row.id}
                                     handleCloseSnackbar={handleCloseSnackbar}
                                     setSnackbar={setSnackbar}
-                                    pageSize={pageSize}
-                                    pageIndex={pageIndex}
                                     toggleDrawer2={toggleDrawer2}
                                 />
                             </TableCell>
@@ -474,14 +258,381 @@ function MainTable({ listProject, pageSize, pageIndex, toggleDrawer2 }) {
         </Paper>
     )
 }
-// eslint-disable-next-line react/prop-types
-export default function DashboardTable({ listProject, pageSize, pageIndex, setpageIndex, setPagesize, pageCount,
-    searchQuery, setSearchQuery }) {
+function HandleAssignUserToProject({ row, projectId, setSnackbar }) {
+    const [filteredUsers, setFilteredUsers] = useState([]);
+    const [visibleUsers, setVisibleUsers] = useState(10);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [searchKeyword, setSearchKeyword] = useState("");
+    const dispatch = useDispatch();
+    useEffect(() => {
+        async function fetchData(keyword = "") {
+            try {
+                const result = await dispatch(callGetListUser(keyword));
+                setFilteredUsers(result.result);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+        fetchData();
+    }, [dispatch]);
 
-    const [openDrawerCreateProject, setOpenDrawerCreateProject] = React.useState(false);
-    const [openDrawerCreateTask, setOpenDrawerCreateTask] = React.useState(false);
-    const [openDrawerEditProject, setOpenDrawerEditProject] = React.useState(false);
-    const [projectId, setProjectId] = React.useState(0)
+    const handleOpenMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+    };
+
+    const handleSearchChange = (event) => {
+        const keyword = event.target.value;
+        setSearchKeyword(keyword);
+        async function fetchFilteredData() {
+            try {
+                const result = await dispatch(callGetListUser(keyword));
+                setFilteredUsers(result.result.slice(0, 10));
+                setVisibleUsers(10);
+            } catch (error) {
+                console.error("Error fetching filtered data:", error);
+            }
+        }
+        fetchFilteredData();
+    };
+    const handleShowMore = () => {
+        setVisibleUsers((prevVisible) => prevVisible + 10);
+    };
+    const assignUserToProject = async (user) => {
+        const result = await dispatch(callAsignUserProject({ projectId: projectId, userId: user }))
+        if (result.isAssigned) {
+            setSnackbar({
+                open: true,
+                message: "Assigned user to project successfully!",
+                severity: "success",
+            });
+        }
+        else {
+            setSnackbar({
+                open: true,
+                message: "Assigned user to project failed!",
+                severity: "error",
+            });
+        }
+        await dispatch(callGetListProject(""))
+        setAnchorEl(null);
+    }
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+
+    const handleOpenModal = (userId) => {
+        setSelectedUser(userId);
+        setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+        setSelectedUser(null);
+    };
+
+    const handleConfirmAssign = () => {
+        assignUserToProject(selectedUser);
+        handleCloseModal();
+    };
+
+    return (
+        <>
+            <AvatarGroup
+                max={4}
+                spacing="medium"
+                sx={{
+                    "& .MuiAvatar-root": {
+                        border: "2px solid #fff",
+                        width: 40,
+                        height: 40,
+                        fontSize: "1rem",
+                    },
+                }}
+            >
+                {row.members && row.members.length > 0
+                    ? row.members.map((user, index) => (
+                        <Tooltip key={index} title={user?.name}>
+                            <Avatar {...StringAvatar(user?.name)} />
+                        </Tooltip>
+                    ))
+                    : null}
+            </AvatarGroup>
+            <Avatar
+                onClick={handleOpenMenu}
+                sx={{
+                    cursor: "pointer",
+                    bgcolor: "primary.main",
+                    "&:hover": {
+                        bgcolor: "primary.dark",
+                    },
+                }}
+            >
+                <AddIcon sx={{ color: "white" }} />
+            </Avatar>
+            <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleCloseMenu}
+                PaperProps={{
+                    style: { maxHeight: 400, width: "300px" },
+                }}
+                sx={{
+                    "& .MuiMenu-paper": {
+                        boxShadow: 3,
+                        borderRadius: 2,
+                    },
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <MenuItem disableRipple sx={{ p: 1.5 }}>
+                    <TextField
+                        fullWidth
+                        placeholder="Search users"
+                        value={searchKeyword}
+                        onChange={handleSearchChange}
+                        variant="outlined"
+                        size="small"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        sx={{
+                            "& .MuiOutlinedInput-root": {
+                                bgcolor: "background.paper",
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                    borderColor: "primary.main",
+                                },
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                    borderColor: "primary.main",
+                                },
+                            },
+                        }}
+                    />
+                </MenuItem>
+                {filteredUsers.slice(0, visibleUsers).map((user, index) => (
+                    <MenuItem
+                        key={index}
+                        onClick={() => handleOpenModal(user.id)}
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            "&:hover": {
+                                bgcolor: "grey.100",
+                            },
+                        }}
+                    >
+                        <Avatar
+                            {...StringAvatar(user?.username)}
+                            sx={{
+                                marginRight: 2,
+                                width: 32,
+                                height: 32,
+                                fontSize: "0.875rem",
+                            }}
+                        />
+                        {user.username}
+                    </MenuItem>
+                ))}
+                {/* Modal */}
+                <Modal open={openModal} onClose={handleCloseModal}>
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            bgcolor: "background.paper",
+                            boxShadow: 24,
+                            p: 4,
+                            borderRadius: 2,
+                            minWidth: 300,
+                        }}
+                    >
+                        <Typography variant="h6" sx={{ mb: 2 }}>
+                            Confirm
+                        </Typography>
+                        <Typography sx={{ mb: 3 }}>
+                            Do you want to add this user to your project?
+                        </Typography>
+                        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                            <Button variant="outlined" onClick={handleCloseModal}>
+                                Cancel
+                            </Button>
+                            <Button variant="contained" color="primary" onClick={handleConfirmAssign}>
+                                Confirm
+                            </Button>
+                        </Box>
+                    </Box>
+                </Modal>
+                {visibleUsers < filteredUsers.length && (
+                    <MenuItem disableRipple>
+                        <Button
+                            onClick={handleShowMore}
+                            fullWidth
+                            sx={{
+                                textTransform: "none",
+                                color: "primary.main",
+                                "&:hover": {
+                                    bgcolor: "primary.light",
+                                },
+                            }}
+                        >
+                            Show More
+                        </Button>
+                    </MenuItem>
+                )}
+            </Menu>
+        </>
+
+    )
+}
+function PaginationComponent({ pageIndex, pageSize, totalItems, setPageIndex }) {
+    // Tính tổng số trang dựa trên totalItems được truyền vào
+    const totalPages = Math.ceil(14 / pageSize);
+    // Nếu tổng số trang nhỏ hơn hoặc bằng giá trị này thì hiển thị đầy đủ
+    const totalPagesToShow = 1;
+
+    // Hàm xử lý khi click vào số trang cụ thể
+    const handlePageClick = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setPageIndex(page);
+        }
+    };
+
+    // Xử lý nút "Previous"
+    const handlePrevious = () => {
+        if (pageIndex > 1) {
+            setPageIndex(pageIndex - 1);
+        }
+    };
+
+    // Xử lý nút "Next"
+    const handleNext = () => {
+        if (pageIndex < totalPages) {
+            setPageIndex(pageIndex + 1);
+        }
+    };
+
+    // Tính toán danh sách các trang hiển thị (có thể thêm dấu "..." nếu số trang nhiều)
+    const visiblePages = [];
+    if (totalPages <= totalPagesToShow) {
+        for (let i = 1; i <= totalPages; i++) {
+            visiblePages.push(i);
+        }
+    } else {
+        visiblePages.push(1);
+        if (pageIndex > 4) visiblePages.push("...");
+        for (let i = Math.max(2, pageIndex - 2); i <= Math.min(totalPages - 1, pageIndex + 2); i++) {
+            visiblePages.push(i);
+        }
+        if (pageIndex < totalPages - 3) visiblePages.push("...");
+        visiblePages.push(totalPages);
+    }
+
+    return (
+        <Box
+            sx={{
+                pt: 2,
+                pb: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 1,
+                flexWrap: 'wrap',
+            }}
+        >
+            {/* Nút Previous */}
+            <Button
+                size="small"
+                variant="outlined"
+                color="inherit"
+                startIcon={<KeyboardArrowLeftIcon />}
+                onClick={handlePrevious}
+                disabled={pageIndex === 1}
+                sx={{
+                    display: { xs: 'none', sm: 'inline-flex' },
+                }}
+            >
+                Previous
+            </Button>
+
+            {/* Các nút hiển thị số trang */}
+            {visiblePages.map((page, index) =>
+                page === "..." ? (
+                    <Box
+                        key={`ellipsis-${index}`}
+                        component="span"
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: 32,
+                            height: 32,
+                            border: '1px solid',
+                            borderColor: 'action.disabled',
+                            color: 'text.primary',
+                            bgcolor: 'transparent',
+                            margin: 0.5,
+                        }}
+                    >
+                        ...
+                    </Box>
+                ) : (
+                    <IconButton
+                        key={page}
+                        size="small"
+                        color={pageIndex === page ? 'primary' : 'default'}
+                        onClick={() => handlePageClick(page)}
+                        sx={{
+                            border: '1px solid',
+                            borderColor: pageIndex === page ? 'primary.main' : 'action.disabled',
+                            bgcolor: pageIndex === page ? 'primary.main' : 'transparent',
+                            color: pageIndex === page ? 'white' : 'text.primary',
+                            '&:hover': {
+                                bgcolor: pageIndex === page ? 'primary.dark' : 'action.hover',
+                            },
+                            width: 32,
+                            height: 32,
+                            margin: 0.5,
+                        }}
+                    >
+                        {page}
+                    </IconButton>
+                )
+            )}
+
+            {/* Nút Next */}
+            <Button
+                size="small"
+                variant="outlined"
+                color="inherit"
+                endIcon={<KeyboardArrowRightIcon />}
+                onClick={handleNext}
+                disabled={pageIndex === totalPages}
+                sx={{
+                    display: { xs: 'none', sm: 'inline-flex' },
+                }}
+            >
+                Next
+            </Button>
+        </Box>
+    );
+}
+// eslint-disable-next-line react/prop-types
+export default function DashboardTable({ listProject, searchQuery, setSearchQuery, pageSize, pageIndex, setPageSize, setPageIndex, sort, setSort }) {
+    const [openDrawerCreateProject, setOpenDrawerCreateProject] = useState(false);
+    const [openDrawerCreateTask, setOpenDrawerCreateTask] = useState(false);
+    const [openDrawerEditProject, setOpenDrawerEditProject] = useState(false);
+    const [projectId, setProjectId] = useState(0);
+    const filteredProjects = listProject.filter((project) =>
+        project.projectName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    const totalItems = filteredProjects.length;
+
+
+    const handlePageChange = (page) => {
+        setPageIndex(page);
+    };
     const toggleDrawer1 = (open) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
@@ -498,16 +649,28 @@ export default function DashboardTable({ listProject, pageSize, pageIndex, setpa
         }
         setOpenDrawerCreateTask(open);
     };
-    const handleChangePageSize = (event) => {
-        setPagesize(event.target.value);
-    };
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value)
+        setPageIndex(1);
     }
+    const handleChange = (event) => {
+        setPageSize(event.target.value);
+    };
+    const handleChangeSort = (event) => {
+        setSort(event.target.value);
+    };
     return (
         <>
-            <Box sx={{ display: { xs: 'none', sm: 'flex' }, flexWrap: 'wrap', gap: 1.5 }}>
-                <FormControl size="small" sx={{ flex: 1 }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    flexWrap: 'wrap',
+                    gap: 1.5,
+                    alignItems: { xs: 'stretch', sm: 'center' },
+                }}
+            >
+                <FormControl size="small" sx={{ flex: 1, minWidth: { xs: '100%', sm: 'auto' } }}>
                     <TextField
                         size="small"
                         placeholder="Search"
@@ -518,31 +681,70 @@ export default function DashboardTable({ listProject, pageSize, pageIndex, setpa
                         }}
                     />
                 </FormControl>
-                <FormControl size="small">
-                    <InputLabel >Page size</InputLabel>
+                <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={toggleDrawer1(true)}
+                    sx={{
+                        minWidth: { xs: '100%', sm: 'auto' },
+                    }}
+                >
+                    Create project
+                </Button>
+                <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={toggleDrawer3(true)}
+                    sx={{
+                        minWidth: { xs: '100%', sm: 'auto' },
+                    }}
+                >
+                    Create task
+                </Button>
+                <FormControl sx={{ width: 100 }}>
+                    <InputLabel id="pageSize">Page Size</InputLabel>
                     <Select
+                        labelId="pageSize"
+                        id="pageSize"
                         value={pageSize}
-                        defaultValue={pageIndex}
-                        label="pageSize"
-                        onChange={handleChangePageSize}
+                        label="Page size"
+                        onChange={handleChange}
+                        size='small'
                     >
                         <MenuItem value={10}>10</MenuItem>
                         <MenuItem value={20}>20</MenuItem>
                         <MenuItem value={30}>30</MenuItem>
+                        <MenuItem value={40}>40</MenuItem>
+                        <MenuItem value={50}>50</MenuItem>
                     </Select>
                 </FormControl>
-                <Button variant="outlined" size='small' onClick={toggleDrawer1(true)}>Create project</Button>
-                <Button variant="outlined" size='small' onClick={toggleDrawer3(true)}>Create task</Button>
+                <FormControl sx={{ width: 100 }}>
+                    <InputLabel id="sort">Sort Name</InputLabel>
+                    <Select
+                        labelId="sort"
+                        id="sort"
+                        value={sort}
+                        label="Sort name"
+                        onChange={handleChangeSort}
+                        size='small'
+                    >
+                        <MenuItem value={'asc'}>A-Z</MenuItem>
+                        <MenuItem value={'desc'}>Z-A</MenuItem>
+                    </Select>
+                </FormControl>
             </Box>
+
             <MainTable
-                listProject={listProject}
-                pageSize={pageSize}
-                pageIndex={pageIndex}
+                listProject={filteredProjects}
                 toggleDrawer2={toggleDrawer2}
             />
-            <Pagination
-                setpageIndex={setpageIndex}
-                pageCount={pageCount} />
+            <PaginationComponent
+                pageIndex={pageIndex}
+                pageSize={pageSize}
+                totalItems={totalItems}
+                onPageChange={handlePageChange}
+                setPageIndex={setPageIndex}
+            />
             <CreateProjectModal
                 openDrawerCreateProject={openDrawerCreateProject}
                 toggleDrawer={toggleDrawer1}
@@ -554,6 +756,7 @@ export default function DashboardTable({ listProject, pageSize, pageIndex, setpa
                 projectId={projectId}
             />
             <CreateTaskModal
+                projectId={projectId}
                 openDrawerCreateTask={openDrawerCreateTask}
                 toggleDrawer={toggleDrawer3}
                 setOpenDrawerCreateTask={setOpenDrawerCreateTask} />

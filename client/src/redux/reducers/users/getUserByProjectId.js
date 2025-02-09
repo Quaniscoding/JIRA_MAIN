@@ -22,7 +22,7 @@ export const callGetListUserByProjectId = (id) => async (dispatch) => {
     try {
         const result = await http.get(`/user/getUserByProjectId/${id}`);
         dispatch(getListUserByProjectId(result.data.content));
-        return { isUserAsign: true, message: result.data.message }
+        return result.data.content
     } catch (err) {
         if (err.response.status == 404) {
             return { isUserAsign: false, message: err.response.data.message }
