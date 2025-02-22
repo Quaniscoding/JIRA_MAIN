@@ -48,6 +48,11 @@ const updateTimeTracking = require('./Task/updateTaskDetails')
 const updateEstimate = require('./Task/updateTaskDetails');
 const getProjectByPagination = require('./Project/getProjectByPagination')
 const getProjectByUserId = require('./Project/getProjectByUserId')
+//Role
+const createRole = require('./Role/createRole')
+const getRole = require('./Role/getRole')
+const updateRole = require('./Role/updateRole')
+const deleteRole = require('./Role/deleteRole')
 //token
 const refreshToken = require('./token/refreshToken');
 //auth
@@ -102,4 +107,10 @@ rootRoute.use('/project', updateDescription);
 rootRoute.use('/project', updateTimeTracking);
 rootRoute.use('/project', updateEstimate);
 rootRoute.use('/project', getProjectByUserId)
+
+//Role
+rootRoute.use('/role', createRole)
+rootRoute.use('/role', getRole)
+rootRoute.use('/role', updateRole)
+rootRoute.use('/role', deleteRole)
 module.exports = rootRoute;

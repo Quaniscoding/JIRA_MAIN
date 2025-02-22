@@ -5,7 +5,7 @@ const UserSchema = new Schema({
     id: {
         type: Number,
         unique: true,
-        require:true
+        require: true
     },
     username: {
         type: String,
@@ -23,7 +23,7 @@ const UserSchema = new Schema({
         type: String,
         require: true
     },
-    pass_word: {
+    password: {
         type: String,
         require: true,
     },

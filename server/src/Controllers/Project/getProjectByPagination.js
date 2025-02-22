@@ -43,7 +43,7 @@ const getProjectByPagination = async (req, res) => {
             .skip(skip)
             .limit(Number(pageSize))
             .select('-pass_word')
-            .select('-_id');
+            .select('-_id')
 
         if (result.length === 0) {
             failCode(res, "Danh sách dự án trống!");

@@ -88,8 +88,6 @@ const ProjectSchema = new Schema({
         statusName: String,
         alias: String,
     }],
-}, {
-    versionKey: false,
 });
 
 const Project = mongoose.model('Project', ProjectSchema);
