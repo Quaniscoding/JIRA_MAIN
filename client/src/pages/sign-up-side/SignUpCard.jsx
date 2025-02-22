@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import MuiCard from '@mui/material/Card';
 import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -13,12 +12,11 @@ import Typography from '@mui/material/Typography';
 
 import { styled } from '@mui/material/styles';
 
-import ForgotPassword from './ForgotPassword';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
+import { SitemarkIcon } from './CustomIcons';
 import { useDispatch } from 'react-redux';
-import { callLogin } from './../../redux/reducers/auth/userLogin';
-import CustomSnackbar from './../../components/CustomSnackbar/CustomSnackbar';
+import CustomSnackbar from '../../components/CustomSnackbar/CustomSnackbar';
 import { useNavigate } from 'react-router-dom';
+import { callSignUp } from '../../redux/reducers/auth/userSignUp';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -38,12 +36,15 @@ const Card = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 
-export default function SignInCard() {
+export default function SignUpCard() {
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [open, setOpen] = React.useState(false);
+  const [nameError, setNameError] = React.useState(false);
+  const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+  const [phoneNumberError, setPhoneNumberError] = React.useState(false);
+  const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = React.useState('');
   const [snackbar, setSnackbar] = React.useState({
     open: false,
     message: "",
@@ -51,13 +52,6 @@ export default function SignInCard() {
   });
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
-  };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
   };
   const dispatch = useDispatch();
   const navigate = useNavigate()
@@ -68,16 +62,18 @@ export default function SignInCard() {
     }
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
-    const pass_word = data.get("password");
-    const result = await dispatch(callLogin({ email, pass_word }))
+    const password = data.get("password");
+    const username = data.get("username");
+    const phoneNumber = data.get("phoneNumber");
+    const result = await dispatch(callSignUp({ email, password, username, phoneNumber }))
     if (result === true) {
       setSnackbar({
         open: true,
-        message: "Login success!",
+        message: "Sign up success!",
         severity: "success",
       });
       setTimeout(() => {
-        navigate('/');
+        navigate('/login');
       }, 3000);
     }
     if (result.status === 400) {
@@ -92,7 +88,9 @@ export default function SignInCard() {
   const validateInputs = () => {
     const email = document.getElementById('email');
     const password = document.getElementById('password');
-
+    const username = document.getElementById('username');
+    const phoneNumber = document.getElementById('phoneNumber');
+    const confirmPassword = document.getElementById('confirmPassword');
     let isValid = true;
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
@@ -112,7 +110,30 @@ export default function SignInCard() {
       setPasswordError(false);
       setPasswordErrorMessage('');
     }
-
+    if (!confirmPassword.value || confirmPassword.value !== password.value) {
+      setPasswordError(true);
+      setPasswordErrorMessage('Password and confirm password must be the same.');
+      isValid = false;
+    } else {
+      setPasswordError(false);
+      setPasswordErrorMessage('');
+    }
+    if (!username.value || username.value.length < 6) {
+      setNameError(true);
+      setNameErrorMessage('Name must be at least 6 characters long.');
+      isValid = false;
+    } else {
+      setNameError(false);
+      setNameErrorMessage('');
+    }
+    if (!phoneNumber.value || phoneNumber.value.length < 10) {
+      setPhoneNumberError(true);
+      setPhoneNumberErrorMessage('Phone number must be at least 10 characters long.');
+      isValid = false;
+    } else {
+      setPhoneNumberError(false);
+      setPhoneNumberErrorMessage('');
+    }
     return isValid;
   };
 
@@ -152,18 +173,45 @@ export default function SignInCard() {
             sx={{ ariaLabel: 'email' }}
           />
         </FormControl>
+        <FormControl htmlFor="username">
+          <FormLabel htmlFor="username">Username</FormLabel>
+          <TextField
+            error={nameError}
+            helperText={nameErrorMessage}
+            id="username"
+            type="text"
+            name="username"
+            placeholder="John Doe"
+            autoComplete="username"
+            autoFocus
+            required
+            fullWidth
+            variant="outlined"
+            color={nameError ? 'error' : 'primary'}
+            sx={{ ariaLabel: 'username' }}
+          />
+        </FormControl>
+        <FormControl htmlFor="phoneNumber">
+          <FormLabel htmlFor="phoneNumber">Phone number</FormLabel>
+          <TextField
+            error={phoneNumberError}
+            helperText={phoneNumberErrorMessage}
+            id="phoneNumber"
+            type="number"
+            name="phoneNumber"
+            placeholder="0123456789"
+            autoComplete="phoneNumber"
+            autoFocus
+            required
+            fullWidth
+            variant="outlined"
+            color={phoneNumberError ? 'error' : 'primary'}
+            sx={{ ariaLabel: 'phoneNumber' }}
+          />
+        </FormControl>
         <FormControl>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <FormLabel htmlFor="password">Password</FormLabel>
-            <Link
-              component="button"
-              type="button"
-              onClick={handleClickOpen}
-              variant="body2"
-              sx={{ alignSelf: 'baseline' }}
-            >
-              Forgot your password?
-            </Link>
           </Box>
           <TextField
             error={passwordError}
@@ -180,45 +228,41 @@ export default function SignInCard() {
             color={passwordError ? 'error' : 'primary'}
           />
         </FormControl>
+        <FormControl>
+          <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
+          <TextField
+            error={passwordError}
+            helperText={passwordErrorMessage}
+            name="confirmPassword"
+            placeholder="••••••"
+            type="password"
+            id="confirmPassword"
+            autoComplete="current-password"
+            required
+            fullWidth
+            variant="outlined"
+            color={passwordError ? 'error' : 'primary'}
+          />
+        </FormControl>
         <FormControlLabel
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
         />
-        <ForgotPassword open={open} handleClose={handleClose} />
         <Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
-          Sign in
+          Sign up
         </Button>
         <Typography sx={{ textAlign: 'center' }}>
           Don&apos;t have an account?{' '}
           <span>
             <Link
-              href="/signup"
+              href="/login"
               variant="body2"
               sx={{ alignSelf: 'center' }}
             >
-              Sign up
+              Sign in
             </Link>
           </span>
         </Typography>
-      </Box>
-      <Divider>or</Divider>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={() => alert('Sign in with Google')}
-          startIcon={<GoogleIcon />}
-        >
-          Sign in with Google
-        </Button>
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={() => alert('Sign in with Facebook')}
-          startIcon={<FacebookIcon />}
-        >
-          Sign in with Facebook
-        </Button>
       </Box>
       <CustomSnackbar
         open={snackbar.open}

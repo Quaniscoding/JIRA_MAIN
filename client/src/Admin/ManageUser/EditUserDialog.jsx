@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { callUpdateUser } from '../../redux/reducers/users/updateUser';
 
@@ -19,109 +18,128 @@ function EditUserDialog({ open, user, onClose, onUserUpdated }) {
     };
 
     const handleSave = async () => {
-        const response = await dispatch(callUpdateUser(user.id, formData));
-
         const payload = {
             ...formData,
             birth_day: new Date(formData.birth_day).toISOString(),
         };
-        await dispatch(callUpdateUser(user.id, payload));
+        const response = await dispatch(callUpdateUser(user.id, payload));
         if (response) {
-            onUserUpdated(formData);
+            onUserUpdated(payload);
         }
         onClose();
     };
-    return (
-        <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Edit User</DialogTitle>
-            <DialogContent>
-                <TextField label="Username" name="username" fullWidth margin="dense" value={formData.username || ''} onChange={handleChange} />
-                <TextField
-                    margin="dense"
-                    label="First Name"
-                    name="first_name"
-                    value={formData.first_name}
-                    onChange={handleChange}
-                    fullWidth
-                />
-                <TextField
-                    margin="dense"
-                    label="Last Name"
-                    name="last_name"
-                    value={formData.last_name}
-                    onChange={handleChange}
-                    fullWidth
-                />
-                <TextField
-                    margin="dense"
-                    label="Email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    fullWidth
-                />
-                <TextField
-                    margin="dense"
-                    label="Pass_word"
-                    name="pass_word"
-                    type="pass_word"
-                    value={formData.pass_word}
-                    onChange={handleChange}
-                    fullWidth
-                />
-                <TextField
-                    margin="dense"
-                    label="Phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    fullWidth
-                />
-                <TextField
-                    margin="dense"
-                    label="Birth_day"
-                    name="birth_day"
-                    type="date"
-                    value={formData.birth_day}
-                    onChange={handleChange}
-                    fullWidth
-                    InputLabelProps={{ shrink: true }}
-                />
-                <FormControl margin="dense" fullWidth>
-                    <InputLabel id="gender-label">Gender</InputLabel>
-                    <Select
-                        labelId="gender-label"
-                        name="gender"
-                        value={formData.gender}
-                        onChange={handleChange}
-                        fullWidth
-                    >
-                        <MenuItem value="male">Male</MenuItem>
-                        <MenuItem value="female">Female</MenuItem>
-                        <MenuItem value="other">Other</MenuItem>
-                    </Select>
-                </FormControl>
 
-                <FormControl margin="dense" fullWidth>
-                    <InputLabel id="role-label">Role</InputLabel>
-                    <Select
-                        labelId="role-label"
-                        name="role"
-                        value={formData.role}
+    if (!open) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto backdrop-blur-lg">
+            <div className="relative w-full max-w-lg p-6 bg-white rounded-lg shadow-xl">
+                <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
+                    aria-label="Close modal"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Edit User</h2>
+                <div className="grid grid-cols-1 gap-4">
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Username"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.username || ''}
                         onChange={handleChange}
-                        fullWidth
+                    />
+                    <input
+                        type="text"
+                        name="first_name"
+                        placeholder="First Name"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.first_name || ''}
+                        onChange={handleChange}
+                    />
+                    <input
+                        type="text"
+                        name="last_name"
+                        placeholder="Last Name"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.last_name || ''}
+                        onChange={handleChange}
+                    />
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.email || ''}
+                        onChange={handleChange}
+                    />
+                    <input
+                        type="password"
+                        name="pass_word"
+                        placeholder="Password"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.pass_word || ''}
+                        onChange={handleChange}
+                    />
+                    <input
+                        type="text"
+                        name="phone"
+                        placeholder="Phone"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.phone || ''}
+                        onChange={handleChange}
+                    />
+                    <input
+                        type="date"
+                        name="birth_day"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.birth_day || ''}
+                        onChange={handleChange}
+                    />
+                    <select
+                        name="gender"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.gender || ''}
+                        onChange={handleChange}
                     >
-                        <MenuItem value="admin">Admin</MenuItem>
-                        <MenuItem value="user">User</MenuItem>
-                        <MenuItem value="moderator">Moderator</MenuItem>
-                    </Select>
-                </FormControl>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose} color="secondary">Cancel</Button>
-                <Button onClick={handleSave} color="primary">Save</Button>
-            </DialogActions>
-        </Dialog>
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <select
+                        name="role"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.role || ''}
+                        onChange={handleChange}
+                    >
+                        <option value="">Select Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                        <option value="moderator">Moderator</option>
+                    </select>
+                </div>
+                <div className="flex justify-end space-x-4 mt-6">
+                    <button
+                        onClick={onClose}
+                        className="px-5 py-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleSave}
+                        className="px-5 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                    >
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
     );
 }
 

@@ -7,6 +7,9 @@ import { useEffect, useState } from "react";
 import CircularProgressWithLabel from "../CircularProgressWithLabel/CircularProgressWithLabel";
 import { callGetListProject } from "../../redux/reducers/projects/getAllProject";
 import { callGetListProjectByPagination } from "../../redux/reducers/projects/getProjectByPagination";
+import { getLocal } from "../../utils/config";
+import { DATA_USER } from "../../utils/constant";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
     const dispatch = useDispatch();
@@ -18,6 +21,12 @@ export default function Dashboard() {
     const [pageSize, setPageSize] = useState(10);
     const [pageIndex, setPageIndex] = useState(1);
     const [sort, setSort] = useState('asc');
+    const dataUser = getLocal(DATA_USER)
+    console.log(dataUser);
+    const navigate = useNavigate()
+    if (dataUser === null) {
+        navigate('/login')
+    }
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearchQuery(searchQuery);

@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userSignUp from './reducers/auth/userSignUp'
 import getAllProject from './reducers/projects/getAllProject'
 import getProjectCategory from './reducers/projects/getProjectCategory'
 import getAllStatus from './reducers/task/getAllStatus'
@@ -9,9 +8,9 @@ import getListUserByProjectId from './reducers/users/getUserByProjectId';
 import getTaskDetail from './reducers/task/getTaskDetail'
 import getComments from './reducers/comments/getComments'
 import getUserById from './reducers/users/getUserById'
+import getListUser from './reducers/users/getUserByPagination'
 export const store = configureStore({
   reducer: {
-    userSignUp,
     getAllProject,
     getProjectCategory,
     getAllStatus,
@@ -20,7 +19,8 @@ export const store = configureStore({
     getListUserByProjectId,
     getTaskDetail,
     getComments,
-    getUserById
+    getUserById,
+    getListUser
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware(),
 });

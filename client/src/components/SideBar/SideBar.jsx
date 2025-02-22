@@ -14,7 +14,7 @@ import {
   ListItemText,
   Typography,
   GlobalStyles,
-  Collapse,
+  Button,
 } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
@@ -30,34 +30,18 @@ import ColorModeSelect from "../shared-theme/ColorModeSelect.jsx";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DATA_PROJECT, DATA_USER, USER_LOGIN } from './../../utils/constant';
 import { getLocal } from "../../utils/config.js";
-import { useState } from "react";
-
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import { useEffect } from "react";
-import CustomSnackbar from '../CustomSnackbar/CustomSnackbar';
-import PeopleIcon from '@mui/icons-material/People';
 export default function Sidebar() {
-  const [reset, setReset] = useState(0);
+  const [reset, setReset] = React.useState(0);
   const location = useLocation();
   const navigate = useNavigate();
-  const [openSubmenu, setOpenSubmenu] = useState(false);
-  const adminPaths = ["/admin/manage/manage-user"];
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
-  const handleCloseSnackbar = () => {
-    setSnackbar((prev) => ({ ...prev, open: false }));
-  };
   const getSelectedItem = () => {
     switch (location.pathname) {
       case '/dashboard':
         return 'dashboard';
-      case '/admin/manage/manage-user':
-        return '/admin/manage/manage-user';
+      case '/messages':
+        return 'messages';
+      case '/users':
+        return 'users';
       case '/support':
         return 'support';
       case '/settings':
@@ -66,31 +50,14 @@ export default function Sidebar() {
         return 'home';
     }
   };
-  useEffect(() => {
-    if (adminPaths.includes(location.pathname)) {
-      setOpenSubmenu(true);
-    }
-  }, [location.pathname]);
   const handleLogout = () => {
     setReset(reset + 1);
     localStorage.removeItem(DATA_USER);
     localStorage.removeItem(USER_LOGIN);
     localStorage.removeItem(DATA_PROJECT);
-    navigate("/login");
+    navigate("/signin");
   };
   const dataUser = getLocal(DATA_USER)
-  const handleToggleSubmenu = () => {
-    if (dataUser?.role === "admin") {
-      setOpenSubmenu((prev) => !prev);
-    } else {
-      setSnackbar({
-        open: true,
-        message: "Unthorization",
-        severity: "error",
-      })
-    }
-  };
-
   const selectedItem = getSelectedItem();
   return (
     <Box
@@ -183,28 +150,15 @@ export default function Sidebar() {
               <ListItemText primary='Dashboard' />
             </ListItemButton>
           </ListItem>
-          {dataUser?.role === 'admin'}
           <ListItem disablePadding>
-            <ListItemButton onClick={handleToggleSubmenu}>
+            <ListItemButton component='a' href='/messages'>
               <ListItemIcon>
-                <PeopleIcon />
+                <QuestionAnswerRoundedIcon />
               </ListItemIcon>
-              <ListItemText primary="Admin" />
-              {openSubmenu ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              <ListItemText primary='Messages' />
+              <Chip label='4' color='primary' size='small' />
             </ListItemButton>
           </ListItem>
-          <Collapse in={openSubmenu} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem disablePadding>
-                <ListItemButton component="a" href="/admin/manage/manage-user" sx={{ pl: 4 }} selected={selectedItem === "/admin/manage/manage-user"}>
-                  <ListItemIcon>
-                    <PersonRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Manage User" />
-                </ListItemButton>
-              </ListItem>
-            </List>
-          </Collapse>
         </List>
         <List>
           <ListItem disablePadding>
@@ -233,22 +187,15 @@ export default function Sidebar() {
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
           <Typography variant='subtitle2' fontWeight='bold'>
-            {dataUser?.username}
-          </Typography>
-          <Typography variant='caption' color='text.secondary'>
-            {dataUser?.email}
+            {dataUser ? dataUser.username : "Username"}
           </Typography>
         </Box>
-        <IconButton size='small' color='default' onClick={() => handleLogout()}>
-          <LogoutRoundedIcon />
-        </IconButton>
+        {
+          dataUser ? <IconButton size='small' color='default' onClick={() => handleLogout()}>
+            <LogoutRoundedIcon />
+          </IconButton> : <Button variant='outlined' size="small" color='primary' href='/signin'>Sign in</Button>
+        }
       </Box>
-      <CustomSnackbar
-        open={snackbar.open}
-        message={snackbar.message}
-        severity={snackbar.severity}
-        onClose={handleCloseSnackbar}
-      />
     </Box>
   );
 }

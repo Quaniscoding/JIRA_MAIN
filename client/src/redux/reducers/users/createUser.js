@@ -5,6 +5,6 @@ export const callCreateUser = (data) => async () => {
         const result = await http.post("/user/createUser", data)
         return { message: result.data.message }
     } catch (err) {
-        return { message: err.response.data.message }
+        return err
     }
 }

@@ -239,6 +239,7 @@ export default function HandleAssignUserToProject({ listProjectDetails, projectI
                                 Not added yet
                             </Typography>
                             {filteredUsers?.slice(0, visibleUsers).map((user, index) => (
+                                console.log(user),
                                 <Box
                                     key={index}
                                     sx={{
@@ -255,7 +256,7 @@ export default function HandleAssignUserToProject({ listProjectDetails, projectI
                                             {user.username}
                                         </Typography>
                                     </Box>
-                                    <Button variant="outlined" color="info">
+                                    <Button variant="outlined" color="info" onClick={() => openModalAssign()}>
                                         Add
                                     </Button>
                                 </Box>
@@ -316,3 +317,4 @@ export default function HandleAssignUserToProject({ listProjectDetails, projectI
 
     )
 }
+

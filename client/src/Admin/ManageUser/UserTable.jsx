@@ -1,28 +1,23 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableHead, TableRow, IconButton, Avatar, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
-import { Edit, Delete } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { callDeleteUser } from '../../redux/reducers/users/deleteUser';
 import { callGetListUser } from '../../redux/reducers/users/getUser';
 
-function UserTable({ users, onEdit, onDelete }) {
+function UserTable({ users, onEdit }) {
     const dispatch = useDispatch();
-    const [openDialog, setOpenDialog] = useState(false); // State để điều khiển hiển thị modal
-    const [userIdToDelete, setUserIdToDelete] = useState(null); // State lưu ID người dùng cần xóa
+    const [openDialog, setOpenDialog] = useState(false);
+    const [userIdToDelete, setUserIdToDelete] = useState(null);
 
-    // Mở modal khi nhấn nút Delete
     const handleClickOpenDialog = (userId) => {
-        setUserIdToDelete(userId); // Lưu lại ID người dùng muốn xóa
+        setUserIdToDelete(userId);
         setOpenDialog(true);
     };
 
-    // Đóng modal
     const handleCloseDialog = () => {
         setOpenDialog(false);
         setUserIdToDelete(null);
     };
 
-    // Xóa người dùng
     const handleDelete = async () => {
         if (userIdToDelete) {
             const response = await dispatch(callDeleteUser(userIdToDelete));
@@ -30,70 +25,68 @@ function UserTable({ users, onEdit, onDelete }) {
                 await dispatch(callGetListUser());
             }
         }
-        handleCloseDialog(); // Đóng modal sau khi xóa
+        handleCloseDialog();
     };
 
     return (
-        <>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Id</TableCell>
-                        <TableCell>Avatar</TableCell>
-                        <TableCell>Username</TableCell>
-                        <TableCell>First Name</TableCell>
-                        <TableCell>Last Name</TableCell>
-                        <TableCell>Email</TableCell>
-                        <TableCell>Birthday</TableCell>
-                        <TableCell>Actions</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
+        <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
+                <thead>
+                    <tr className="bg-gray-100 border-b">
+                        <th className="py-2 px-4 text-left">Id</th>
+                        <th className="py-2 px-4 text-left">Avatar</th>
+                        <th className="py-2 px-4 text-left">Username</th>
+                        <th className="py-2 px-4 text-left">First Name</th>
+                        <th className="py-2 px-4 text-left">Last Name</th>
+                        <th className="py-2 px-4 text-left">Email</th>
+                        <th className="py-2 px-4 text-left">Birthday</th>
+                        <th className="py-2 px-4 text-left">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
                     {users.map((user) => (
-                        <TableRow key={user.id}>
-                            <TableCell>{user.id}</TableCell>
-                            <TableCell>
-                                <Avatar src={user.avatar} alt={user.username} />
-                            </TableCell>
-                            <TableCell>{user.username}</TableCell>
-                            <TableCell>{user.first_name}</TableCell>
-                            <TableCell>{user.last_name}</TableCell>
-                            <TableCell>{user.email}</TableCell>
-                            <TableCell>
-                                {user.birth_day
-                                    ? new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(user.birth_day))
-                                    : ''}
-                            </TableCell>
-
-                            <TableCell>
-                                <IconButton color="primary" onClick={() => onEdit(user)}>
-                                    <Edit />
-                                </IconButton>
-                                <IconButton color="secondary" onClick={() => handleClickOpenDialog(user.id)}>
-                                    <Delete />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
+                        <tr key={user.id} className="border-b hover:bg-gray-50">
+                            <td className="py-2 px-4">{user.id}</td>
+                            <td className="py-2 px-4">
+                                <img src={user.avatar} alt={user.username} className="w-10 h-10 rounded-full" />
+                            </td>
+                            <td className="py-2 px-4">{user.username}</td>
+                            <td className="py-2 px-4">{user.first_name}</td>
+                            <td className="py-2 px-4">{user.last_name}</td>
+                            <td className="py-2 px-4">{user.email}</td>
+                            <td className="py-2 px-4">
+                                {user.birth_day ? new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(user.birth_day)) : ''}
+                            </td>
+                            <td className="py-2 px-4 flex space-x-2">
+                                <button onClick={() => onEdit(user)} className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
+                                    Edit
+                                </button>
+                                <button onClick={() => handleClickOpenDialog(user.id)} className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
                     ))}
-                </TableBody>
-            </Table>
+                </tbody>
+            </table>
 
-            {/* Modal xác nhận xóa */}
-            <Dialog open={openDialog} onClose={handleCloseDialog}>
-                <DialogTitle>Confirm Deletion</DialogTitle>
-                <DialogContent>
-                    Are you sure you want to delete this user? This action cannot be undone.
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDialog} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleDelete} color="secondary">
-                        Confirm
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </>
+            {openDialog && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto backdrop-blur-lg" onClick={handleCloseDialog}>
+                    <div className="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 className="text-lg font-semibold mb-4">Confirm Deletion</h2>
+                        <p>Are you sure you want to delete this user? This action cannot be undone.</p>
+                        <div className="mt-4 flex justify-end space-x-2">
+                            <button onClick={handleCloseDialog} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+                                Cancel
+                            </button>
+                            <button onClick={handleDelete} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 }
 
