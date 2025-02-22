@@ -22,7 +22,6 @@ export default function Dashboard() {
     const [pageIndex, setPageIndex] = useState(1);
     const [sort, setSort] = useState('asc');
     const dataUser = getLocal(DATA_USER)
-    console.log(dataUser);
     const navigate = useNavigate()
     if (dataUser === null) {
         navigate('/login')
@@ -117,6 +116,7 @@ export default function Dashboard() {
             </Box>
             <DashboardTable
                 listProject={listProject}
+                setListProject={setListProject}
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 pageSize={pageSize}

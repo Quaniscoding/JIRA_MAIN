@@ -55,6 +55,7 @@ import { useEffect } from 'react';
 import AddIcon from "@mui/icons-material/Add";
 import StringAvatar from '../../StringAvatar/StringAvatar.jsx';
 import { callGetListProjectByPagination } from '../../../redux/reducers/projects/getProjectByPagination.js';
+import { useTheme } from '@emotion/react';
 function RowMenu({ projectId, setSnackbar, toggleDrawer2 }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -155,40 +156,65 @@ function RowMenu({ projectId, setSnackbar, toggleDrawer2 }) {
 
 // eslint-disable-next-line react/prop-types
 function MainTable({ listProject, toggleDrawer2 }) {
+    const theme = useTheme();
+    const navigate = useNavigate();
     const [snackbar, setSnackbar] = useState({
         open: false,
         message: "",
         severity: "success",
     });
+
     const handleCloseSnackbar = () => {
         setSnackbar({ ...snackbar, open: false });
     };
-
-    const navigate = useNavigate()
+    const projectCategoryMap = {
+        1: 'Dự án web',
+        0: 'Dự án phần mềm',
+        2: 'Dự án di động'
+    };
     return (
         <Paper
             sx={{
                 mt: 2,
-                overflow: 'auto',
-                minHeight: { xs: "400px", sm: "750px" }, // Chiều cao tối thiểu thay đổi theo màn hình
+                overflow: "auto",
+                minHeight: { xs: "400px", sm: "750px" },
                 boxShadow: 3,
                 borderRadius: 2,
+                bgcolor: theme.palette.background.paper,
             }}
         >
             <Table stickyHeader>
                 <TableHead>
-                    <TableRow sx={{ bgcolor: "primary.main" }}>
-                        <TableCell sx={{ fontWeight: "bold" }}>ID</TableCell>
-                        <TableCell sx={{ fontWeight: "bold" }}>Project name</TableCell>
-                        <TableCell sx={{ fontWeight: "bold" }}>Creator</TableCell>
-                        <TableCell sx={{ fontWeight: "bold", display: { xs: "none", sm: "table-cell" } }}>
+                    <TableRow
+                        sx={{
+                            bgcolor: theme.palette.mode === "dark" ? "grey.800" : "primary.main",
+                        }}
+                    >
+                        <TableCell>ID</TableCell>
+                        <TableCell>
+                            Project name
+                        </TableCell>
+                        <TableCell>
+                            Creator
+                        </TableCell>
+                        <TableCell
+                            sx={{
+                                fontWeight: "bold",
+                                display: { xs: "none", sm: "table-cell" },
+                            }}
+                        >
                             Description
                         </TableCell>
-                        <TableCell sx={{ fontWeight: "bold" }}>Members</TableCell>
-                        <TableCell sx={{ fontWeight: "bold", display: { xs: "none", md: "table-cell" } }}>
+                        <TableCell>Members</TableCell>
+                        <TableCell
+                            sx={{
+                                fontWeight: "bold",
+                                display: { xs: "none", md: "table-cell" },
+                            }}
+                        >
                             Category
                         </TableCell>
-                        <TableCell></TableCell>
+                        <TableCell />
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -197,17 +223,16 @@ function MainTable({ listProject, toggleDrawer2 }) {
                             key={row.id}
                             sx={{
                                 "&:nth-of-type(odd)": {
-                                    bgcolor: "grey.50", // Màu nền xen kẽ
+                                    bgcolor: theme.palette.mode === "dark" ? "grey.800" : "grey.50",
                                 },
                                 "&:hover": {
-                                    bgcolor: "grey.100", // Hiệu ứng hover
+                                    bgcolor: theme.palette.mode === "dark" ? "grey.700" : "grey.100",
                                 },
                             }}
                         >
-                            <TableCell>{row.id}</TableCell>
+                            <TableCell sx={{ color: theme.palette.text.primary }}>{row.id}</TableCell>
                             <TableCell>
                                 <a
-                                    className="pointer-event"
                                     onClick={(e) => {
                                         e.preventDefault();
                                         navigate(`/projectDetails/${row.id}`);
@@ -216,26 +241,41 @@ function MainTable({ listProject, toggleDrawer2 }) {
                                     style={{
                                         cursor: "pointer",
                                         textDecoration: "none",
-                                        color: "primary.main",
+                                        color:
+                                            theme.palette.mode === "dark"
+                                                ? theme.palette.primary.light
+                                                : theme.palette.primary.main,
                                         fontWeight: 500,
                                     }}
                                 >
                                     {row.projectName}
                                 </a>
                             </TableCell>
-                            <TableCell>{row.creator.username}</TableCell>
-                            <TableCell sx={{ display: { xs: "none", sm: "table-cell" } }}>
+                            <TableCell sx={{ color: theme.palette.text.primary }}>
+                                {row.creator.username}
+                            </TableCell>
+                            <TableCell
+                                sx={{
+                                    display: { xs: "none", sm: "table-cell" },
+                                    color: theme.palette.text.primary,
+                                }}
+                            >
                                 {row.description}
                             </TableCell>
-                            <TableCell sx={{ display: "flex" }}>
+                            <TableCell sx={{ display: "flex", color: theme.palette.text.primary }}>
                                 <HandleAssignUserToProject
                                     row={row}
                                     projectId={row.id}
                                     setSnackbar={setSnackbar}
                                 />
                             </TableCell>
-                            <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
-                                {row.projectCategoryName}
+                            <TableCell
+                                sx={{
+                                    display: { xs: "none", md: "table-cell" },
+                                    color: theme.palette.text.primary,
+                                }}
+                            >
+                                {projectCategoryMap[row.categoryId] || 'Không xác định'}
                             </TableCell>
                             <TableCell>
                                 <RowMenu
@@ -256,7 +296,7 @@ function MainTable({ listProject, toggleDrawer2 }) {
                 onClose={handleCloseSnackbar}
             />
         </Paper>
-    )
+    );
 }
 function HandleAssignUserToProject({ row, projectId, setSnackbar }) {
     const [filteredUsers, setFilteredUsers] = useState([]);
@@ -619,7 +659,7 @@ function PaginationComponent({ pageIndex, pageSize, totalItems, setPageIndex }) 
     );
 }
 // eslint-disable-next-line react/prop-types
-export default function DashboardTable({ listProject, searchQuery, setSearchQuery, pageSize, pageIndex, setPageSize, setPageIndex, sort, setSort }) {
+export default function DashboardTable({ listProject, searchQuery, setSearchQuery, pageSize, pageIndex, setPageSize, setPageIndex, sort, setSort, setListProject }) {
     const [openDrawerCreateProject, setOpenDrawerCreateProject] = useState(false);
     const [openDrawerCreateTask, setOpenDrawerCreateTask] = useState(false);
     const [openDrawerEditProject, setOpenDrawerEditProject] = useState(false);
@@ -628,7 +668,6 @@ export default function DashboardTable({ listProject, searchQuery, setSearchQuer
         project.projectName.toLowerCase().includes(searchQuery.toLowerCase())
     );
     const totalItems = filteredProjects.length;
-
 
     const handlePageChange = (page) => {
         setPageIndex(page);
@@ -746,10 +785,12 @@ export default function DashboardTable({ listProject, searchQuery, setSearchQuer
                 setPageIndex={setPageIndex}
             />
             <CreateProjectModal
+                setListProject={setListProject}
                 openDrawerCreateProject={openDrawerCreateProject}
                 toggleDrawer={toggleDrawer1}
                 setOpenDrawerCreateProject={setOpenDrawerCreateProject} />
             <EditProjectModal
+                setListProject={setListProject}
                 openDrawerEditProject={openDrawerEditProject}
                 toggleDrawer2={toggleDrawer2}
                 setOpenDrawerEditProject={setOpenDrawerEditProject}

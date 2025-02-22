@@ -22,7 +22,8 @@ export default function EditProjectModal({
     openDrawerEditProject,
     toggleDrawer2,
     setOpenDrawerEditProject,
-    projectId
+    projectId,
+    setListProject
 }) {
     const categories = [
         { id: 0, name: "Dự án phần mềm" },
@@ -119,9 +120,6 @@ export default function EditProjectModal({
                 }
 
                 if (isMounted) setProgress(100);
-
-
-
                 setSnackbar({
                     open: true,
                     message: result.message,
@@ -140,7 +138,8 @@ export default function EditProjectModal({
                         setProgress(0);
                     }
                 }, 3000);
-                await dispatch(callGetListProject(""));
+                const rs = await dispatch(callGetListProjectByPagination(10, 1, "", ""));
+                setListProject(rs);
             } else {
                 setSnackbar({
                     open: true,

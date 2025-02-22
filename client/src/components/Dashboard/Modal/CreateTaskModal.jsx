@@ -249,7 +249,7 @@ export default function CreateTaskModal({
                         setProgress(0);
                     }
                 }, 3000);
-                await dispatch(callGetListProjectByPagination(10, 1, ""));
+                await dispatch(callGetListProjectByPagination(10, 1, "", "asc"));
             } else {
                 setSnackbar({
                     open: true,

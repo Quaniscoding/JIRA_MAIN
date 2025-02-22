@@ -21,6 +21,7 @@ export default function CreateProjectModal({
     openDrawerCreateProject,
     toggleDrawer,
     setOpenDrawerCreateProject,
+    setListProject
 }) {
     const categories = [
         { id: 0, name: "Dự án phần mềm" },
@@ -115,7 +116,8 @@ export default function CreateProjectModal({
                         setProgress(0);
                     }
                 }, 3000);
-                await dispatch(callGetListProjectByPagination(10, 1, "", ""));
+                const rs = await dispatch(callGetListProjectByPagination(10, 1, "", ""));
+                setListProject(rs);
             } else {
                 setSnackbar({
                     open: true,

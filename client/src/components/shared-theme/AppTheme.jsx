@@ -2,7 +2,6 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-import { inputsCustomizations } from './customizations/inputs.jsx';
 import { colorSchemes, typography } from './themePrimitives.ts';
 
 function AppTheme({ children, disableCustomTheme, themeComponents }) {

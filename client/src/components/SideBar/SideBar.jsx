@@ -193,7 +193,7 @@ export default function Sidebar() {
         {
           dataUser ? <IconButton size='small' color='default' onClick={() => handleLogout()}>
             <LogoutRoundedIcon />
-          </IconButton> : <Button variant='outlined' size="small" color='primary' href='/signin'>Sign in</Button>
+          </IconButton> : <Button variant='outlined' size="small" color='primary' href='/login'>Sign in</Button>
         }
       </Box>
     </Box>
