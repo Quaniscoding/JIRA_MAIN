@@ -1,9 +1,17 @@
 import { http } from "../../../utils/baseUrl";
-export const callGetListProjectByPagination = (pageSize, pageIndex, keyword, sort) => async () => {
+export const callGetListProjectByPagination = (pageSize, pageIndex, keyword = "", sort) => async () => {
     try {
-        const result = await http.get(`/project/getProject/getProjectByPagination?pageSize=${pageSize}&pageIndex=${pageIndex}&keyword=${keyword}&sort=${sort}`)
-        return result.data.content.result;
+        let url = `/project/getProject/getProjectByPagination?pageSize=${pageSize}&pageIndex=${pageIndex}&sort=${sort}`;
+
+        // Chỉ thêm keyword vào URL nếu có giá trị
+        if (keyword) {
+            url += `&keyword=${encodeURIComponent(keyword)}`;
+        }
+
+        const result = await http.get(url);
+        return result.data.content;
     } catch (err) {
-        return err
+        return err;
     }
-}
+};
+

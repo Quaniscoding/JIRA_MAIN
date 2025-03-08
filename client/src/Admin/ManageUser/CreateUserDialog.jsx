@@ -4,7 +4,7 @@ import { callCreateUser } from '../../redux/reducers/users/createUser';
 
 function CreateUserDialog({ open, onClose, onUserAdded }) {
     const [formData, setFormData] = useState({
-        username: '', first_name: '', last_name: '', email: '', pass_word: '',
+        username: '', first_name: '', last_name: '', email: '', password: '',
         phone: '', birth_day: '', gender: '', role: '',
     });
     const dispatch = useDispatch();
@@ -15,7 +15,7 @@ function CreateUserDialog({ open, onClose, onUserAdded }) {
     };
     const resetFormData = () => {
         setFormData({
-            username: '', first_name: '', last_name: '', email: '', pass_word: '',
+            username: '', first_name: '', last_name: '', email: '', password: '',
             phone: '', birth_day: '', gender: '', role: '',
         });
     }
@@ -79,10 +79,10 @@ function CreateUserDialog({ open, onClose, onUserAdded }) {
                     />
                     <input
                         type="password"
-                        name="pass_word"
+                        name="password"
                         placeholder="Password"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={formData.pass_word}
+                        value={formData.password}
                         onChange={handleChange}
                     />
                     <input

@@ -12,23 +12,25 @@ function ManageUser() {
     const [keyword, setKeyword] = useState('');
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
+    const [sort, setSort] = useState('desc');
+    const [sortBy, setSortBy] = useState('id');
     const [totalPages, setTotalPages] = useState(1);
     const dispatch = useDispatch();
     const listUser = useSelector(state => state.getListUser.listUser);
 
     useEffect(() => {
         async function fetchData() {
-            const response = await dispatch(callGetUserByPagination(page, limit, keyword));
+            const response = await dispatch(callGetUserByPagination(page, limit, keyword, sortBy, sort));
             if (response && response.result) {
                 if (response.totalPages) {
-                    setTotalPages(response.totalRow);
+                    setTotalPages(response.totalPages);
                 } else {
                     setTotalPages(response.result.length < limit ? page : page + 1);
                 }
             }
         }
         fetchData();
-    }, [dispatch, page, limit, keyword]);
+    }, [dispatch, page, limit, keyword, sort, sortBy]);
 
     const handleOpenCreateDialog = () => setOpenCreateDialog(true);
     const handleCloseCreateDialog = () => setOpenCreateDialog(false);
@@ -70,15 +72,47 @@ function ManageUser() {
                     placeholder="Search users..."
                     className="border border-gray-300 p-2 rounded w-64"
                 />
+                <div className="flex space-x-4 p-4">
+                    {/* Limit Select */}
+                    <select
+                        className="p-4 border rounded-md"
+                        value={limit}
+                        onChange={(e) => setLimit(Number(e.target.value))}
+                    >
+                        {[10, 20, 50, 100].map((value) => (
+                            <option key={value} value={value}>{value}</option>
+                        ))}
+                    </select>
+
+                    {/* Sort By Select */}
+                    <select
+                        className="p-4 border rounded-md"
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                    >
+                        <option value="id">Id</option>
+
+                        <option value="username">Username</option>
+                        <option value="email">Email</option>
+                        <option value="role">Role</option>
+                    </select>
+
+                    {/* Sort Order Select */}
+                    <select
+                        className="p-4 border rounded-md"
+                        value={sort}
+                        onChange={(e) => setSort(e.target.value)}
+                    >
+                        <option value="asc">ASC</option>
+                        <option value="desc">DESC</option>
+                    </select>
+                </div>
             </div>
             <div className="mt-5 bg-white p-4 rounded-lg shadow-md">
                 <UserTable
+                    keyword={keyword}
                     users={listUser?.result || []}
                     onEdit={handleOpenEditDialog}
-                    onDelete={(updatedUsers) => {
-                        // Sau khi xóa, bạn có thể re-fetch lại danh sách người dùng nếu cần.
-                        // dispatch(callGetUserByPagination(page, limit, keyword));
-                    }}
                 />
             </div>
             {/* Pagination Controls */}

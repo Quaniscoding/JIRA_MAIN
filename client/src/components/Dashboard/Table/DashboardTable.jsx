@@ -56,7 +56,7 @@ import AddIcon from "@mui/icons-material/Add";
 import StringAvatar from '../../StringAvatar/StringAvatar.jsx';
 import { callGetListProjectByPagination } from '../../../redux/reducers/projects/getProjectByPagination.js';
 import { useTheme } from '@emotion/react';
-function RowMenu({ projectId, setSnackbar, toggleDrawer2 }) {
+function RowMenu({ projectId, setSnackbar, toggleDrawer2, setListProject }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const [openConfirm, setOpenConfirm] = useState(false);
@@ -78,7 +78,8 @@ function RowMenu({ projectId, setSnackbar, toggleDrawer2 }) {
     const handleDelete = async () => {
         const result = await dispatch(callDeleteProject(projectId));
         if (result.isDelete) {
-            await dispatch(callGetListProject(""))
+            const rs = await dispatch(callGetListProjectByPagination(10, 1, undefined, "asc"));
+            setListProject(rs.result);
             setSnackbar({
                 open: true,
                 message: "Delete project successfully!",
@@ -155,7 +156,8 @@ function RowMenu({ projectId, setSnackbar, toggleDrawer2 }) {
 }
 
 // eslint-disable-next-line react/prop-types
-function MainTable({ listProject, toggleDrawer2 }) {
+function MainTable({ listProject, toggleDrawer2, setListProject }) {
+    if (!listProject) return;
     const theme = useTheme();
     const navigate = useNavigate();
     const [snackbar, setSnackbar] = useState({
@@ -218,7 +220,7 @@ function MainTable({ listProject, toggleDrawer2 }) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {listProject?.map((row) => (
+                    {(Array.isArray(listProject) ? listProject : listProject?.rs || []).map((row) => (
                         <TableRow
                             key={row.id}
                             sx={{
@@ -264,6 +266,7 @@ function MainTable({ listProject, toggleDrawer2 }) {
                             </TableCell>
                             <TableCell sx={{ display: "flex", color: theme.palette.text.primary }}>
                                 <HandleAssignUserToProject
+                                    setListProject={setListProject}
                                     row={row}
                                     projectId={row.id}
                                     setSnackbar={setSnackbar}
@@ -279,6 +282,7 @@ function MainTable({ listProject, toggleDrawer2 }) {
                             </TableCell>
                             <TableCell>
                                 <RowMenu
+                                    setListProject={setListProject}
                                     projectId={row.id}
                                     handleCloseSnackbar={handleCloseSnackbar}
                                     setSnackbar={setSnackbar}
@@ -298,7 +302,7 @@ function MainTable({ listProject, toggleDrawer2 }) {
         </Paper>
     );
 }
-function HandleAssignUserToProject({ row, projectId, setSnackbar }) {
+function HandleAssignUserToProject({ row, projectId, setSnackbar, setListProject }) {
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [visibleUsers, setVisibleUsers] = useState(10);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -349,6 +353,8 @@ function HandleAssignUserToProject({ row, projectId, setSnackbar }) {
                 message: "Assigned user to project successfully!",
                 severity: "success",
             });
+            const rs = await dispatch(callGetListProjectByPagination(10, 1, "", ""));
+            setListProject(rs);
         }
         else {
             setSnackbar({
@@ -526,9 +532,9 @@ function HandleAssignUserToProject({ row, projectId, setSnackbar }) {
 
     )
 }
-function PaginationComponent({ pageIndex, pageSize, totalItems, setPageIndex }) {
+function PaginationComponent({ pageIndex, pageSize, totalItems, setPageIndex, pageCount }) {
     // Tính tổng số trang dựa trên totalItems được truyền vào
-    const totalPages = Math.ceil(14 / pageSize);
+    const totalPages = pageCount;
     // Nếu tổng số trang nhỏ hơn hoặc bằng giá trị này thì hiển thị đầy đủ
     const totalPagesToShow = 1;
 
@@ -659,15 +665,12 @@ function PaginationComponent({ pageIndex, pageSize, totalItems, setPageIndex }) 
     );
 }
 // eslint-disable-next-line react/prop-types
-export default function DashboardTable({ listProject, searchQuery, setSearchQuery, pageSize, pageIndex, setPageSize, setPageIndex, sort, setSort, setListProject }) {
+export default function DashboardTable({ listProject, searchQuery, setSearchQuery, pageSize, pageIndex, setPageSize, setPageIndex, sort, setSort, setListProject, pageCount }) {
     const [openDrawerCreateProject, setOpenDrawerCreateProject] = useState(false);
     const [openDrawerCreateTask, setOpenDrawerCreateTask] = useState(false);
     const [openDrawerEditProject, setOpenDrawerEditProject] = useState(false);
     const [projectId, setProjectId] = useState(0);
-    const filteredProjects = listProject.filter((project) =>
-        project.projectName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    const totalItems = filteredProjects.length;
+    const totalItems = pageCount;
 
     const handlePageChange = (page) => {
         setPageIndex(page);
@@ -774,8 +777,9 @@ export default function DashboardTable({ listProject, searchQuery, setSearchQuer
             </Box>
 
             <MainTable
-                listProject={filteredProjects}
+                listProject={listProject}
                 toggleDrawer2={toggleDrawer2}
+                setListProject={setListProject}
             />
             <PaginationComponent
                 pageIndex={pageIndex}
@@ -783,6 +787,7 @@ export default function DashboardTable({ listProject, searchQuery, setSearchQuer
                 totalItems={totalItems}
                 onPageChange={handlePageChange}
                 setPageIndex={setPageIndex}
+                pageCount={pageCount}
             />
             <CreateProjectModal
                 setListProject={setListProject}

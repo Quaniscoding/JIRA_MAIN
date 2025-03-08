@@ -54,7 +54,6 @@ export default function SignUpSide() {
               m: 'auto',
             }}
           >
-            <Content />
             <SignUpCard />
           </Stack>
         </Stack>

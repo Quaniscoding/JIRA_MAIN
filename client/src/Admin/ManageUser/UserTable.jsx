@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { callDeleteUser } from '../../redux/reducers/users/deleteUser';
 import { callGetListUser } from '../../redux/reducers/users/getUser';
 
-function UserTable({ users, onEdit }) {
+function UserTable({ users, onEdit, keyword }) {
     const dispatch = useDispatch();
     const [openDialog, setOpenDialog] = useState(false);
     const [userIdToDelete, setUserIdToDelete] = useState(null);
@@ -22,7 +22,8 @@ function UserTable({ users, onEdit }) {
         if (userIdToDelete) {
             const response = await dispatch(callDeleteUser(userIdToDelete));
             if (response) {
-                await dispatch(callGetListUser());
+                const rs = await dispatch(callGetUserByPagination(1, 10, keyword, 'id', 'asc'));
+                console.log(rs);
             }
         }
         handleCloseDialog();

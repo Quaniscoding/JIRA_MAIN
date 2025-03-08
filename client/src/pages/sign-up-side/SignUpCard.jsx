@@ -37,6 +37,9 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export default function SignUpCard() {
+  const navigate = useNavigate()
+  const user = JSON.parse(localStorage.getItem('dataUser'));
+  if (user) navigate('/');
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -54,7 +57,6 @@ export default function SignUpCard() {
     setSnackbar({ ...snackbar, open: false });
   };
   const dispatch = useDispatch();
-  const navigate = useNavigate()
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateInputs()) {
@@ -74,7 +76,7 @@ export default function SignUpCard() {
       });
       setTimeout(() => {
         navigate('/login');
-      }, 3000);
+      }, 1000);
     }
     if (result.status === 400) {
       setSnackbar({

@@ -20,6 +20,7 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(false);
     const [pageSize, setPageSize] = useState(10);
     const [pageIndex, setPageIndex] = useState(1);
+    const [pageCount, setPageCount] = useState(0);
     const [sort, setSort] = useState('asc');
     const dataUser = getLocal(DATA_USER)
     const navigate = useNavigate()
@@ -45,8 +46,19 @@ export default function Dashboard() {
                     await new Promise((resolve) => setTimeout(resolve, 100)); // Giả lập tiến trình
                     if (isMounted) setProgress(i);
                 }
+
                 const rs = await dispatch(callGetListProjectByPagination(pageSize, pageIndex, debouncedSearchQuery, sort));
-                if (rs) setListProject(rs);
+                console.log("API response:", rs);
+
+                if (rs && isMounted) {
+                    const projects = rs.result
+
+                    setListProject(projects);
+                    setPageSize(Number(rs.pageSize || pageSize));
+                    setPageIndex(Number(rs.pageIndex || pageIndex));
+                    setPageCount(Number(rs.pageCount || pageCount));
+                }
+
                 if (isMounted) setProgress(100);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -64,6 +76,7 @@ export default function Dashboard() {
             isMounted = false; // Cleanup khi component unmount
         };
     }, [dispatch, debouncedSearchQuery, pageSize, pageIndex, sort]);
+
 
     return (
         <Box
@@ -125,6 +138,7 @@ export default function Dashboard() {
                 pageIndex={pageIndex}
                 sort={sort}
                 setSort={setSort}
+                pageCount={pageCount}
             />
         </Box>
     );

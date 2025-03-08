@@ -56,6 +56,7 @@ export default function CreateTaskModal({
     });
     const [listUser, setListUser] = React.useState([]);
     const [listProjectByUserId, setListProjectByUserId] = useState([]);
+
     const [errors, setErrors] = useState({});
     const [snackbar, setSnackbar] = useState({
         open: false,
@@ -77,6 +78,7 @@ export default function CreateTaskModal({
                         setListProjectByUserId(result);
                     }
                 } catch (error) {
+                    setListProjectByUserId([]);
                     console.error("Error fetching projects:", error);
                 }
             };
@@ -248,7 +250,7 @@ export default function CreateTaskModal({
                         setOpenDrawerCreateTask(false);
                         setProgress(0);
                     }
-                }, 3000);
+                }, 500);
                 await dispatch(callGetListProjectByPagination(10, 1, "", "asc"));
             } else {
                 setSnackbar({
@@ -357,7 +359,7 @@ export default function CreateTaskModal({
                             error={!!errors.projectId}
                             helperText={errors.projectId}
                         >
-                            {listProjectByUserId.map(prj => (
+                            {listProjectByUserId?.map(prj => (
                                 <MenuItem key={prj.id} value={prj.id}>
                                     {prj.projectName}
                                 </MenuItem>

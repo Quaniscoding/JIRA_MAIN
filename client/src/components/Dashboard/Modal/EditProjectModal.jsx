@@ -137,9 +137,9 @@ export default function EditProjectModal({
                         setOpenDrawerEditProject(false);
                         setProgress(0);
                     }
-                }, 3000);
-                const rs = await dispatch(callGetListProjectByPagination(10, 1, "", ""));
-                setListProject(rs);
+                }, 500);
+                const rs = await dispatch(callGetListProjectByPagination(10, 1, undefined, "asc"));
+                setListProject(rs.result);
             } else {
                 setSnackbar({
                     open: true,

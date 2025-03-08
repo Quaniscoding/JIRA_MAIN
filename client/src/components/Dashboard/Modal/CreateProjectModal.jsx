@@ -12,7 +12,6 @@ import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import CustomSnackbar from "../../CustomSnackbar/CustomSnackbar";
 import { callCreateProject } from "./../../../redux/reducers/projects/createProject";
-import { callGetListProject } from "../../../redux/reducers/projects/getAllProject";
 import { useDispatch } from "react-redux";
 import CircularProgressWithLabel from "../../CircularProgressWithLabel/CircularProgressWithLabel";
 import { callGetListProjectByPagination } from "../../../redux/reducers/projects/getProjectByPagination";
@@ -115,9 +114,9 @@ export default function CreateProjectModal({
                         setOpenDrawerCreateProject(false);
                         setProgress(0);
                     }
-                }, 3000);
-                const rs = await dispatch(callGetListProjectByPagination(10, 1, "", ""));
-                setListProject(rs);
+                }, 500);
+                const rs = await dispatch(callGetListProjectByPagination(10, 1, undefined, "asc"));
+                setListProject(rs.result);
             } else {
                 setSnackbar({
                     open: true,

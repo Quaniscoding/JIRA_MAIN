@@ -55,7 +55,7 @@ export default function Sidebar() {
     localStorage.removeItem(DATA_USER);
     localStorage.removeItem(USER_LOGIN);
     localStorage.removeItem(DATA_PROJECT);
-    navigate("/signin");
+    navigate("/login");
   };
   const dataUser = getLocal(DATA_USER)
   const selectedItem = getSelectedItem();
@@ -148,33 +148,6 @@ export default function Sidebar() {
                 <DashboardRoundedIcon />
               </ListItemIcon>
               <ListItemText primary='Dashboard' />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton component='a' href='/messages'>
-              <ListItemIcon>
-                <QuestionAnswerRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary='Messages' />
-              <Chip label='4' color='primary' size='small' />
-            </ListItemButton>
-          </ListItem>
-        </List>
-        <List>
-          <ListItem disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <SupportRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary='Support' />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <SettingsRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary='Settings' />
             </ListItemButton>
           </ListItem>
         </List>

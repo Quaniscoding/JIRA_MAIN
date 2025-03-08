@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { callUpdateUser } from '../../redux/reducers/users/updateUser';
+import { callGetUserByPagination } from '../../redux/reducers/users/getUserByPagination';
 
 function EditUserDialog({ open, user, onClose, onUserUpdated }) {
     const [formData, setFormData] = useState({});
@@ -25,6 +26,7 @@ function EditUserDialog({ open, user, onClose, onUserUpdated }) {
         const response = await dispatch(callUpdateUser(user.id, payload));
         if (response) {
             onUserUpdated(payload);
+            await dispatch(callGetUserByPagination(1, 10));
         }
         onClose();
     };
@@ -80,10 +82,10 @@ function EditUserDialog({ open, user, onClose, onUserUpdated }) {
                     />
                     <input
                         type="password"
-                        name="pass_word"
+                        name="password"
                         placeholder="Password"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={formData.pass_word || ''}
+                        value={formData.password || ''}
                         onChange={handleChange}
                     />
                     <input

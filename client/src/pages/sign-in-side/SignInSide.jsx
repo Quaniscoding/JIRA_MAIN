@@ -54,7 +54,6 @@ export default function SignInSide() {
               m: 'auto',
             }}
           >
-            <Content />
             <SignInCard />
           </Stack>
         </Stack>
