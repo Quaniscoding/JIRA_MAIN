@@ -56,7 +56,7 @@ const options = {
     openapi: "3.0.0",
     info: {
       "version": "v2",
-      "title": "Airbnb",
+      "title": "Jira",
     },
     tags,
     components,

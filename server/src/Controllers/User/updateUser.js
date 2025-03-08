@@ -10,7 +10,7 @@ const updateUser = async (req, res) => {
             { id },
             { username, first_name, last_name, email, phone, birthday, gender, role, birth_day },
             { new: true }
-        ).select('-pass_word').select('-_id');
+        ).select('-password').select('-_id');
 
         if (!result) {
             return failCode(res, "", "Người dùng không tồn tại!");

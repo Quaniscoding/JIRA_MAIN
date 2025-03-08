@@ -10,7 +10,7 @@ const getUserByProjectId = async (req, res) => {
             return failCode(res, "", "Không tìm thấy dự án");
         }
         const userIds = project.members.map(member => member.id);
-        const users = await User.find({ id: { $in: userIds } }).select('-pass_word').select('-_id');
+        const users = await User.find({ id: { $in: userIds } }).select('-password').select('-_id');
         if (!users) {
             failCode(res, "", "Người dùng không tồn tại!")
         }

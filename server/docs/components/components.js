@@ -336,7 +336,7 @@ module.exports = {
                         "type": "number",
                         "description": "The new phone number of the user"
                     },
-                    "pass_word": {
+                    "password": {
                         "type": "string",
                         "description": "The new password of the user"
                     },
@@ -382,7 +382,7 @@ module.exports = {
                         "type": "string",
                         "description": "The email of the user"
                     },
-                    "pass_word": {
+                    "password": {
                         "type": "string",
                         "description": "The password of the user"
                     }

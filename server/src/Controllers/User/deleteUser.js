@@ -3,7 +3,7 @@ const User = require('../../Models/User.model')
 const deleteUser = async (req, res) => {
     const id = req.params.id;
     try {
-        const result = await User.findOneAndDelete({ id }).select('-pass_word').select('-_id');
+        const result = await User.findOneAndDelete({ id }).select('-password').select('-_id');
         if (!result) {
             return failCode(res, "", 'Người dùng không tồn tại!');
         } else {

@@ -4,7 +4,7 @@ const { successCode, failCode } = require('../../config/reponse');
 const searchUser = async (req, res) => {
     const keyWord = req.query.keyWord;
     try {
-        const result = await User.find({ username: { $regex: new RegExp(keyWord, 'i') } }).select('-pass_word').select('-_id');
+        const result = await User.find({ username: { $regex: new RegExp(keyWord, 'i') } }).select('-password').select('-_id');
 
         const mappedResult = result.map(item => ({
             username: item.username,

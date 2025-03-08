@@ -42,21 +42,18 @@ const getProjectByPagination = async (req, res) => {
             .sort(sortQuery)
             .skip(skip)
             .limit(Number(pageSize))
-            .select('-pass_word')
+            .select('-password')
             .select('-_id')
 
-        if (result.length === 0) {
-            failCode(res, "Danh sách dự án trống!");
-        } else {
-            const pageCount = Math.ceil(totalProjects / Number(pageSize));
-            successCode(res, {
-                pageIndex,
-                pageSize,
-                totalRow: totalProjects,
-                pageCount,
-                result
-            }, "Lấy danh sách dự án thành công!");
-        }
+
+        const pageCount = Math.ceil(totalProjects / Number(pageSize));
+        successCode(res, {
+            pageIndex,
+            pageSize,
+            totalRow: totalProjects,
+            pageCount,
+            result
+        }, "Lấy danh sách dự án thành công!");
     } catch (error) {
         console.log(error);
         errorCode(res, "Backend error!");

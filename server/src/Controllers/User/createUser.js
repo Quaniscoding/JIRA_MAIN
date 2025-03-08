@@ -5,9 +5,9 @@ const generateId = require('../../utils/generateId');
 const createUser = async (req, res) => {
     try {
         const { username, first_name,
-            last_name, email, pass_word, phone, birth_day, gender } = req.body;
+            last_name, email, password, phone, birth_day, gender } = req.body;
         const id = await generateId('userId');
-        const result = await User.findOne({ email: email }).select('-pass_word').select('-_id');
+        const result = await User.findOne({ email: email }).select('-password').select('-_id');
         if (result) {
             failCode(res, "", "Email đã tồn tại!")
         }
@@ -18,7 +18,7 @@ const createUser = async (req, res) => {
                 first_name,
                 last_name,
                 email,
-                pass_word: await bcrypt.hash(pass_word, 10),
+                password: await bcrypt.hash(password, 10),
                 phone,
                 birth_day,
                 gender,

@@ -4,7 +4,7 @@ const { successCode, failCode } = require('../../config/reponse');
 const getUserById = async (req, res) => {
     const id = req.params.id;
     try {
-        const result = await User.findOne({ id }).select('-pass_word').select('-_id')
+        const result = await User.findOne({ id }).select('-password').select('-_id')
         if (!result) {
             return failCode(res, "", "Người dùng không tồn tại !");
         } else {

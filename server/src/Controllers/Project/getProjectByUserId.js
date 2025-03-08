@@ -11,12 +11,6 @@ const getProjectByUserId = async (req, res) => {
                 { 'creator.id': userId },
             ]
         });
-
-        // If no projects are found
-        if (projects.length === 0) {
-            return failCode(res, [], "No projects found for this user!");
-        }
-
         // Fetch project categories in parallel
         const categoryIds = projects.map(project => project.categoryId);
         const categories = await ProjectCategory.find({ id: { $in: categoryIds } });
