@@ -1,52 +1,23 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const CommentSchema = new Schema({
-  id: {
-    type: Number,
-    require: true,
-    unique: true
-  },
-  userId: {
-    type: Number,
-    ref: "User",
-    required: true,
-  },
-  contentComment: {
-    type: String,
-    required: true,
-  },
-  deleted: {
-    type: Boolean,
-    default: false,
-  },
-  alias: {
-    type: String,
-  },
-});
-
 const TaskSchema = new Schema(
   {
-    id: {
-      type: Number,
-      require: true,
-      unique: true
-    },
-    listUserAssign: [{ type: Object, ref: "User" }],
+    listUserAssign: [{ type: Schema.Types.ObjectId, ref: "user" }],
     taskName: { type: String, required: true },
     description: { type: String },
-    statusId: { type: Object, ref: "Status" },
-    originalEstimate: { type: Number, required: true },
+    status: { type: Schema.Types.ObjectId, ref: "Status", required: true },
+    originalEstimate: { type: Number },
     timeTrackingSpent: { type: Number },
     timeTrackingRemaining: { type: Number },
-    projectId: { type: Number, ref: "Project", required: true },
-    reporterId: { type: Number, ref: "User" },
-    typeId: { type: Object, ref: "TaskType" },
-    priorityId: { type: Object, ref: "Priority" },
-    listComment: [CommentSchema],
+    project: { type: Schema.Types.ObjectId, ref: "project", required: true },
+    reporter: { type: Schema.Types.ObjectId, ref: "user" },
+    type: { type: Schema.Types.ObjectId, ref: "taskType" },
+    priority: { type: Schema.Types.ObjectId, ref: "priority" },
   },
   {
-    versionKey: false, // Disable the "__v" field
+    versionKey: false,
+    timestamps: true,
   }
 );
 

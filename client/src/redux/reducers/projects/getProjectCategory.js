@@ -25,11 +25,11 @@ export default getProjectCategory.reducer
 export const callGetProjectCategory = (projectCategoryId) => async (dispatch) => {
     try {
         if (projectCategoryId) {
-            const apiGetProjectCategory = await http.get(`/projectCategory/getProjectCategory?projectCategoryId=${projectCategoryId}`)
+            const apiGetProjectCategory = await http.get(`/category/getProjectCategory?projectCategoryId=${projectCategoryId}`)
             dispatch(getProjectCategoryName(apiGetProjectCategory.data.content))
         }
         else {
-            const apiGetProjectCategory = await http.get(`/projectCategory/getProjectCategory`)
+            const apiGetProjectCategory = await http.get(`/category/getProjectCategory`)
             dispatch(getListProjectCategory(apiGetProjectCategory.data.content))
         }
     } catch (err) {

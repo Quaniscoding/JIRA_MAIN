@@ -1,24 +1,19 @@
-const ProjectCategory = require('../../Models/ProjectCategory.model');
-const { failCode, successCode, errorCode } = require('../../config/reponse');
-const generateId = require('../../utils/generateId');
+const ProjectCategory = require("../../Models/ProjectCategory.model");
+const { failCode, successCode, errorCode } = require("../../config/response");
 
 const createProjectCategory = async (req, res) => {
-    const {  projectCategoryName } = req.body;
-    const id = await generateId('projectCategory');
-    try {
-        const result = await ProjectCategory.create({
-            id:id,
-            projectCategoryName: projectCategoryName
-        })
-        if (result == "") {
-            failCode(res, "", "Create fail!")
-        }
-        else {
-            successCode(res, result, "Create success !")
-        }
-    } catch (error) {
-        errorCode(res, "Backend error")
+  const { name } = req.body;
+  try {
+    const result = await ProjectCategory.create({
+      name: name,
+    });
+    if (result == "") {
+      failCode(res, "", "Create fail!");
+    } else {
+      successCode(res, result, "Create success !");
     }
-
-}
-module.exports = { createProjectCategory }
+  } catch (error) {
+    errorCode(res, "Backend error");
+  }
+};
+module.exports = { createProjectCategory };

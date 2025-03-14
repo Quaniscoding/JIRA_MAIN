@@ -1,26 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
-import getAllProject from './reducers/projects/getAllProject'
-import getProjectCategory from './reducers/projects/getProjectCategory'
-import getAllStatus from './reducers/task/getAllStatus'
-import getAllPriority from './reducers/task/getAllPriority'
-import getAllTaskType from './reducers/task/getAllTaskType'
-import getListUserByProjectId from './reducers/users/getUserByProjectId';
-import getTaskDetail from './reducers/task/getTaskDetail'
-import getComments from './reducers/comments/getComments'
-import getUserById from './reducers/users/getUserById'
-import getListUser from './reducers/users/getUserByPagination'
+import getAllProject from "./reducers/projects/getAllProject";
+import getAllProjectByPagination from "./reducers/projects/getProjectByPagination";
+import getProjectCategory from "./reducers/projects/getProjectCategory";
+import getAllStatus from "./reducers/task/getAllStatus";
+import getListUserByProjectId from "./reducers/users/getUserByProjectId";
+import getListUser from "./reducers/users/getUserByPagination";
 export const store = configureStore({
   reducer: {
     getAllProject,
+    getAllProjectByPagination,
     getProjectCategory,
     getAllStatus,
-    getAllPriority,
-    getAllTaskType,
     getListUserByProjectId,
-    getTaskDetail,
-    getComments,
-    getUserById,
-    getListUser
+    getListUser,
   },
-  middleware: getDefaultMiddleware => getDefaultMiddleware(),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

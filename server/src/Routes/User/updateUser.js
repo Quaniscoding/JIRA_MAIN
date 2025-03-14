@@ -1,10 +1,16 @@
-const express = require('express');
+const express = require("express");
 const userRoute = express.Router();
-const { verifyToken } = require('../../middlewares/baseToken');
+const { verifyToken } = require("../../middlewares/baseToken");
 
-const { updateUser } = require('../../Controllers/User/updateUser')
-userRoute.put('/updateUser/:id', verifyToken, updateUser);
+const {
+  updateUser,
+  uploadCloud,
+} = require("../../Controllers/User/updateUser");
+userRoute.put(
+  "/updateUser/:id",
+  verifyToken,
+  uploadCloud.single("avatar"),
+  updateUser
+);
 
 module.exports = userRoute;
-
-

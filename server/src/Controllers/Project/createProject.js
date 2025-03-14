@@ -1,69 +1,58 @@
-const Project = require('../../Models/Project.model');
-const Status = require('../../Models/Status.model');
-const ProjectCategory = require('../../Models/ProjectCategory.model');
-const { failCode, successCode, errorCode } = require('../../config/reponse');
-const generateId = require('../../utils/generateId');
+const Project = require("../../Models/Project.model");
+const Status = require("../../Models/Status.model");
+const User = require("../../Models/User.model");
+const { failCode, successCode, errorCode } = require("../../config/response");
 
 const createProject = async (req, res) => {
-    const { projectName, description, categoryId, alias } = req.body;
-    const creatorId = req.user.id;
-    const creatorName = req.user.username;
-    try {
-    const projectExist = await Project.findOne({ projectName, categoryId });
-
-    if (projectExist) {
-        return failCode(res, "", "Dự án đã tồn tại!");
+  const { projectName, description, category, alias, creator } = req.body;
+  try {
+    // Kiểm tra người dùng có tồn tại không
+    const userExist = await User.findById(creator);
+    if (!userExist) {
+      return failCode(res, "", "User does not exist!");
     }
 
-    const categoryExist = await ProjectCategory.findOne({ id: categoryId });
-
-    if (!categoryExist) {
-        return failCode(res, "", "Dự án không tồn tại!");
-    }
-
-
-    const dataStatus = await Status.find();
-
-
-    const listTask = dataStatus.map(status => ({
-        listTaskDetail: [],
-        statusId: status.id,
-        statusName: status.statusName,
-        alias: status.alias
-    }));
-    const id = await generateId('projectId');
-    const result = await Project.create({
-        id: id,
-        projectName,
-        description,
-        categoryId,
-        alias,
-        deleted: "false",
-        creator: {
-            id: creatorId,
-            username: creatorName
-        },
-        listTask: listTask
+    // Tạo Project
+    const project = await Project.create({
+      projectName,
+      description,
+      category,
+      alias,
+      deleted: "false",
+      creator,
     });
 
-    const responseData = {
-        id: result.id,
-        projectName: result.projectName,
-        description: result.description,
-        categoryId: result.categoryId,
-        alias: result.alias,
-        deleted: result.deleted,
-        listTask: listTask,
-        creator: creatorId
-    };
-    delete responseData.listTask;
-    return successCode(res, responseData, "Tạo dự án thành công!");
+    // Danh sách status mặc định
+    const defaultStatuses = [
+      { statusName: "Backlog", alias: "backlog" },
+      { statusName: "Doing", alias: "doing" },
+      { statusName: "Done", alias: "done" },
+      { statusName: "Testing", alias: "testing" },
+    ];
 
-    } catch (error) {
-        console.log(error);
-        
-        return errorCode(res, "Backend error");
-    }
+    // Tạo 4 status mặc định cho project
+    const statuses = await Promise.all(
+      defaultStatuses.map((status, index) =>
+        Status.create({
+          user: creator,
+          project: project._id,
+          statusName: status.statusName,
+          alias: status.alias,
+          deleted: "false",
+          order: index + 1,
+        })
+      )
+    );
+
+    return successCode(
+      res,
+      { project, statuses },
+      "Create project successfully!"
+    );
+  } catch (error) {
+    console.error("Create Project Error:", error);
+    return errorCode(res, "Backend error");
+  }
 };
 
 module.exports = { createProject };

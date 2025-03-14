@@ -1,35 +1,21 @@
-import { Box, Typography, Container } from "@mui/material";
+import { Button, Result } from "antd";
+import { useNavigate } from "react-router-dom";
 
-const NotFoundPage = () => {
+export default function NotFoundPage() {
+  const navigate = useNavigate();
+
   return (
-    <Container
-      maxWidth="md"
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
-        backgroundColor: "background.default",
-      }}
-    >
-      <Box textAlign="center">
-        <Typography
-          variant="h1"
-          color="error"
-          sx={{ fontWeight: "bold", fontSize: { xs: "6rem", md: "9rem" } }}
-        >
-          404
-        </Typography>
-        <Typography
-          variant="h5"
-          color="textSecondary"
-          sx={{ fontWeight: "medium" }}
-        >
-          Page Not Found
-        </Typography>
-      </Box>
-    </Container>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <Result
+        status="404"
+        title="404"
+        subTitle="Sorry, the page you are looking for does not exist."
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back to Home
+          </Button>
+        }
+      />
+    </div>
   );
-};
-
-export default NotFoundPage;
+}

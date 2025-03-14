@@ -1,28 +1,21 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { http } from '../../../utils/baseUrl';
+import { http } from "../../../utils/baseUrl";
 
-const initialState = {
-    listTaskDetail: []
-}
-
-const getTaskDetail = createSlice({
-    name: "getTaskDetail",
-    initialState,
-    reducers: {
-        getlistTaskDetail: (state, { type, payload }) => {
-            state.listTaskDetail = payload;
-        }
+export const CallGetTaskDetail = async (taskId, projectId) => {
+  try {
+    if (!taskId && !projectId) {
+      throw new Error("Missing required parameters: taskId or projectId");
     }
-});
+    const url = projectId
+      ? `/task/getTaskDetail?projectId=${projectId}`
+      : `/task/getTaskDetail?taskId=${taskId}`;
 
-export const { getlistTaskDetail } = getTaskDetail.actions
-
-export default getTaskDetail.reducer
-export const callGetTaskDetail = (taskId) => async (dispatch) => {
-    try {
-        const result = await http.get(`/project/getTaskDetail/${taskId}`)
-        dispatch(getlistTaskDetail(result.data.content));
-    } catch (err) {
-        return { message: err.response.data }
-    }
-}
+    const { data } = await http.get(url);
+    return data.content;
+  } catch (err) {
+    console.error("Error fetching task details:", err);
+    return {
+      error: true,
+      message: err.message || "Failed to fetch task details",
+    };
+  }
+};

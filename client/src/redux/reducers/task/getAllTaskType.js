@@ -1,29 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { http } from '../../../utils/baseUrl';
+import { http } from "../../../utils/baseUrl";
 
-const initialState = {
-    listTaskType: []
-}
-
-const getAllTaskType = createSlice({
-    name: "getAllTaskType",
-    initialState,
-    reducers: {
-        getlistTaskType: (state, { type, payload }) => {
-            state.listTaskType = payload;
-        }
-    }
-});
-
-export const { getlistTaskType } = getAllTaskType.actions
-
-export default getAllTaskType.reducer
-export const callGetListTaskType = async (dispatch) => {
-    try {
-        const result = await http.get(`/taskType/getTasktype`)
-        dispatch(getlistTaskType(result.data.content));
-    } catch (err) {
-        return err
-    }
-
-}
+export const CallGetListTaskType = async () => {
+  try {
+    const result = await http.get(`/taskType/getTasktype`);
+    return result.data.content;
+  } catch (err) {
+    return err;
+  }
+};

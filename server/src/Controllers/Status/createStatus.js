@@ -1,24 +1,27 @@
-
-const Status = require('../../Models/Status.model');
-const { failCode, successCode, errorCode } = require('../../config/reponse');
-const generateId = require('../../utils/generateId');
+const Status = require("../../Models/Status.model");
+const { failCode, successCode, errorCode } = require("../../config/response");
 
 const createStatus = async (req, res) => {
-    const { statusName, deleted, alias } = req.body;
-    const id = generateId("statusId")
-    try {
-        const result = await Status.create({
-            id: id, statusName: statusName, deleted: deleted, alias: alias
-        })
-        if (result == "") {
-            failCode(res, "", "Create fail!")
-        }
-        else {
-            successCode(res, result, "Create success !")
-        }
-    } catch (error) {
-        errorCode(res, "Backend error")
-    }
+  const { statusName, deleted, alias, user, project } = req.body;
+  try {
+    const lastStatus = await Status.findOne({ user: user }).sort({ order: -1 });
 
-}
-module.exports = { createStatus }
+    const newOrder = lastStatus ? lastStatus.order + 1 : 1;
+
+    const newStatus = await Status.create({
+      user: user,
+      project,
+      statusName,
+      deleted,
+      alias,
+      order: newOrder,
+    });
+
+    return successCode(res, newStatus, "Status created successfully!");
+  } catch (error) {
+    console.error("Create Status Error:", error);
+    return errorCode(res, "Internal server error");
+  }
+};
+
+module.exports = { createStatus };

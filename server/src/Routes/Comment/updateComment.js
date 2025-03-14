@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const commentRoute = express.Router();
-const { verifyToken } = require('../../middlewares/baseToken');
+const { verifyToken } = require("../../middlewares/baseToken");
 
-const { updateComment } = require('../../Controllers/Comment/updateComment')
-commentRoute.put('/updateComment/:commentId', verifyToken, updateComment);
+const { updateComment } = require("../../Controllers/Comment/updateComment");
+commentRoute.put("/updateComment", verifyToken, updateComment);
 
 module.exports = commentRoute;

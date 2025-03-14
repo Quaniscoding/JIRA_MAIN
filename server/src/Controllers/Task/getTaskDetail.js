@@ -1,23 +1,29 @@
-const Task = require('../../Models/Task.model');
-const { failCode, successCode, errorCode } = require('../../config/reponse');
+const Task = require("../../Models/Task.model");
+const { failCode, successCode, errorCode } = require("../../config/response");
 
 const getTaskDetail = async (req, res) => {
-    const taskId = req.params.id; // Assuming the task id is passed as a URL parameter
+  try {
+    const { taskId, projectId } = req.query;
 
-    try {
-        // Find the task by its id
-        const task = await Task.findOne({id:taskId}).select("-_id");
+    let query = {};
+    if (taskId) query._id = taskId;
+    if (projectId) query.project = projectId;
 
-        // Check if the task exists
-        if (!task) {
-            return failCode(res, "", "Không tìm thấy nhiệm vụ!");
-        }
+    const tasks = await Task.find(query)
+      .populate("listUserAssign", "_id username")
+      .populate("status", "_id statusName")
+      .populate("type", "_id name")
+      .populate("priority", "_id name");
 
-        // Return the task details
-        return successCode(res, task, "Đã tìm thấy nhiệm vụ!");
-    } catch (error) {
-        return errorCode(res, "Backend error");
+    if (!tasks || tasks.length === 0) {
+      return failCode(res, "", "Task not found!");
     }
+
+    return successCode(res, tasks, "Task(s) found!");
+  } catch (error) {
+    console.error("Get Task Detail Error:", error);
+    return errorCode(res, "Backend error");
+  }
 };
 
 module.exports = getTaskDetail;

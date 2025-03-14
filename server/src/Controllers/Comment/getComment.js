@@ -1,23 +1,22 @@
-const Task = require('../../Models/Task.model');
-const { failCode, successCode, errorCode } = require('../../config/reponse');
+const Comment = require("../../Models/Comments.model");
+const { failCode, successCode, errorCode } = require("../../config/response");
 
 const getComment = async (req, res) => {
-    const { taskId } = req.params;
-    try {
-        const task = await Task.findOne({id:taskId}).select("-_id")
+  const { taskId } = req.query;
 
-        if (!task) {
-            return failCode(res, "", "Task not found");
-        }
+  if (!taskId) {
+    return errorCode(res, "Task ID is required");
+  }
 
-        const result = task.listComment;
-        console.log(result);
-        
-        return successCode(res, result, "Lấy danh sách bình luận thành công !");
-    } catch (error) {
-        console.error(error);
-        return errorCode(res, "Backend error");
-    }
+  try {
+    const rs = await Comment.find({ task: taskId })
+      .populate("user", "username _id")
+      .populate("task", "taskName _id");
+    return successCode(res, rs, "Get comment successfully");
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    return errorCode(res, "Backend error");
+  }
 };
 
 module.exports = { getComment };

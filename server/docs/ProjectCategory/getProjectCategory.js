@@ -1,5 +1,5 @@
 module.exports = {
-    "/api/projectCategory/getProjectCategory": {
+    "/api/category/getProjectCategory": {
         get: {
             tags: ["Project category"],
             "operationId": "getProjectCategory",

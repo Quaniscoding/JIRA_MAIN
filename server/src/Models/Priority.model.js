@@ -1,27 +1,29 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const PrioritySchema = new Schema({
+const PrioritySchema = new Schema(
+  {
     id: {
-        type: Number,
-        require: true,
-        unique: true
+      type: Number,
+      require: true,
+      unique: true,
     },
-    priority: {
-        type: String,
+    name: {
+      type: String,
     },
     description: {
-        type: String
+      type: String,
     },
     deleted: {
-        type: String,
+      type: String,
     },
     alias: {
-        type: String
-    }
-}, {
-    versionKey: false // Disable the "__v" field
-})
-const Priority = mongoose.model('Priority', PrioritySchema);
-module.exports = Priority
-
+      type: String,
+    },
+  },
+  {
+    versionKey: false,
+  }
+);
+const Priority = mongoose.model("priority", PrioritySchema);
+module.exports = Priority;

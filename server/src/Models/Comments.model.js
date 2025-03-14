@@ -1,28 +1,35 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const CommentSchema = new Schema({
-    id: {
-        type: Number,
-        require: true,
-        unique: true
+const CommentSchema = new Schema(
+  {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
     },
-    taskId: {
-        type: Number
+    task: {
+      type: Schema.Types.ObjectId,
+      ref: "Task",
+      required: true,
     },
-    userId: { id: { type: Number, ref: 'User', unique: true } },
-    contentComment: {
-        type: String,
+    content: {
+      type: String,
+      required: true,
     },
     deleted: {
-        type: String
+      type: Boolean,
+      default: false,
     },
-    alias: {
-        type: String,
-    }
-}, {
-    versionKey: false // Disable the "__v" field
-})
-const Comment = mongoose.model('comment', CommentSchema);
-module.exports = Comment
 
+    alias: {
+      type: String,
+    },
+  },
+  {
+    versionKey: false,
+    timestamps: true,
+  }
+);
+const Comment = mongoose.model("comment", CommentSchema);
+module.exports = Comment;
