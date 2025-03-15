@@ -5,12 +5,8 @@ const updateRole = async (req, res) => {
   try {
     const id = req.params.id;
     const options = { new: true };
-    const { roleName } = req.body;
-    const result = await Role.findByIdAndUpdate(
-      id,
-      { roleName },
-      options
-    ).select("-_id");
+    const { name, alias } = req.body;
+    const result = await Role.findByIdAndUpdate(id, { name, alias }, options);
     if (!result) {
       failCode(res, "", "Role not found!");
       return;
@@ -18,6 +14,7 @@ const updateRole = async (req, res) => {
       successCode(res, result, "Update role successfully!");
     }
   } catch (error) {
+    console.log(error);
     errorCode(res, "Backend error !");
   }
 };

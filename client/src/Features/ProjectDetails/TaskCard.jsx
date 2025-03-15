@@ -64,6 +64,7 @@ export default function TaskCard({
         onCancel={() => setIsModalOpen(false)}
         footer={null}
         width={1200}
+        closeIcon={false}
       >
         {selectedTask && (
           <Row gutter={16}>

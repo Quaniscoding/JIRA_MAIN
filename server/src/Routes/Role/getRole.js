@@ -1,9 +1,9 @@
-const express = require('express');
+const express = require("express");
 const roleRoute = express.Router();
-const { verifyToken } = require('../../middlewares/baseToken.js');
+const { verifyToken } = require("../../middlewares/baseToken.js");
 
-const { createRole } = require('../../Controllers/Role/createRole.js')
+const { getRole } = require("../../Controllers/Role/getRole.js");
 
-roleRoute.post('/createRole', verifyToken, createRole);
+roleRoute.get("/getRole", verifyToken, getRole);
 
 module.exports = roleRoute;

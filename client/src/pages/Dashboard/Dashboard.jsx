@@ -23,10 +23,10 @@ import {
 import { getUserData } from "../../utils/localStorage";
 import { callCreateProject } from "../../redux/reducers/projects/createProject";
 import { callUpdateProject } from "../../redux/reducers/projects/updateProject";
-import { callGetListUser } from "../../redux/reducers/users/getUser";
 import ModalAddUser from "../../components/Modal/ModalAddUser";
 import { callDeleteProject } from "../../redux/reducers/projects/deleteProject";
 import { useNavigate } from "react-router-dom";
+import { CallGetListUser } from "../../redux/reducers/users/apiUser";
 export default function Dashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -53,10 +53,12 @@ export default function Dashboard() {
   const columns = [
     {
       title: "Id",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "index",
+      key: "index",
       sorter: true,
+      render: (_value, _record, index) => index + 1,
     },
+
     {
       title: "Project Name",
       dataIndex: "projectName",
@@ -90,7 +92,6 @@ export default function Dashboard() {
         const avatarUrl =
           creator?.avatar ||
           `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}`;
-
         return (
           <div className="flex items-center gap-2">
             <Tooltip title={username}>
@@ -233,7 +234,7 @@ export default function Dashboard() {
   ]);
 
   const fetchUser = useCallback(async () => {
-    const res = await dispatch(callGetListUser());
+    const res = await dispatch(CallGetListUser());
     setUsersList(res);
   }, [dispatch]);
   const isMounted = useRef(false);

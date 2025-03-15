@@ -37,6 +37,10 @@ const UserSchema = new Schema(
     avatar: {
       type: String,
     },
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     versionKey: false,

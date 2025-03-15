@@ -1,19 +1,21 @@
-import React from 'react'
-import { Route, Routes } from 'react-router-dom'
-import NotFoundPage from '../pages/not_found_page/NotFoundPage'
-import ManageUser from '../Admin/ManageUser/ManageUser';
-import AdminHomePage from '../pages/admin_home_page/AdminHomePage';
-import AdminLayout from '../layout/AdminLayout';
-
+import { Route, Routes } from "react-router-dom";
+import NotFoundPage from "../pages/not_found_page/NotFoundPage";
+import AdminLayout from "../layout/AdminLayout";
+import AdminPage from "../pages/AdminPage/AdminPage";
+import ManageUsers from "../Features/Admin/Users/ManageUsers";
+import ManageRoles from "../Features/Admin/Users/ManageRoles.jsx";
 function AdminRoutes() {
-    return (
-        <Routes>
-            <Route element={<AdminLayout />}>
-                <Route path="users" element={<ManageUser />} />
-                <Route path="*" element={<NotFoundPage />} />
-            </Route>
-        </Routes>
-    )
+  return (
+    <Routes>
+      <Route element={<AdminLayout />}>
+        <Route path="/" element={<AdminPage />}>
+          <Route path="users" element={<ManageUsers />} />
+          <Route path="roles" element={<ManageRoles />} />
+        </Route>
+      </Route>
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
+  );
 }
 
-export default AdminRoutes
+export default AdminRoutes;

@@ -5,12 +5,10 @@ const updateUser = async (req, res) => {
   try {
     const id = req.params.id;
 
-    // Lấy thông tin user hiện tại
     const user = await User.findById(id);
     if (!user) {
       return failCode(res, "", "User not found!");
     }
-
     const {
       username,
       first_name,
@@ -20,8 +18,9 @@ const updateUser = async (req, res) => {
       gender,
       role,
       birth_day,
+      deleted,
     } = req.body;
-
+    const avatar = req.file ? req.file.path : null;
     const updateFields = {};
 
     if (username && username !== user.username) {
@@ -52,11 +51,16 @@ const updateUser = async (req, res) => {
       updateFields.birth_day = birth_day;
     }
 
+    if (avatar) {
+      updateFields.avatar = avatar;
+    }
+    if (deleted !== undefined) {
+      updateFields.deleted = deleted;
+    }
     if (Object.keys(updateFields).length === 0) {
       return successCode(res, user, "No changes detected.");
     }
 
-    // Cập nhật user với các trường đã thay đổi
     const result = await User.findByIdAndUpdate(id, updateFields, {
       new: true,
     }).select("-password");

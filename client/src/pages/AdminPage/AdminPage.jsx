@@ -1,14 +1,12 @@
 import { useState } from "react";
-import Sidebar from "../../components/SideBar/SideBar";
 import { Outlet } from "react-router-dom";
 import { Button, Layout, theme } from "antd";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { getLocal } from "../../utils/config";
 import { DATA_USER } from "../../utils/constant";
-
+import AdminSideBar from "../../components/SideBar/AdminSideBar";
 const { Header, Sider, Content } = Layout;
-
-export default function HomePage() {
+export default function AdminPage() {
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -20,7 +18,7 @@ export default function HomePage() {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider width={250} trigger={null} collapsible collapsed={collapsed}>
-        <Sidebar collapsed={collapsed} />
+        <AdminSideBar collapsed={collapsed} />
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}>

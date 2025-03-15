@@ -72,7 +72,7 @@ ReusableTable.propTypes = {
   columns: PropTypes.array.isRequired,
   dataSource: PropTypes.array.isRequired,
   loading: PropTypes.bool,
-  pagination: PropTypes.object,
+  pagination: PropTypes.object || PropTypes.bool,
   rowKey: PropTypes.string,
   className: PropTypes.string,
   bordered: PropTypes.bool,

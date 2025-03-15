@@ -42,8 +42,9 @@ const signUp = async (req, res) => {
       phone,
       birth_day,
       gender,
-      role: userRole._id, // Gán ObjectId của role "user"
+      role: userRole._id,
       avatar: `https://ui-avatars.com/api/?name=${username}`,
+      deleted: false,
     });
 
     return successCode(

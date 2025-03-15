@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { getUserData } from "../../utils/localStorage";
-import { CallGetUserById } from "../../redux/reducers/users/getUserById";
-import { CallUpdateUser } from "../../redux/reducers/users/updateUser";
 import Loading from "../../components/Loading/Loading";
 import { Form, message } from "antd";
 import moment from "moment";
 import AvatarUpload from "../../Features/Profile/AvatarUpload";
 import ProfileForm from "../../Features/Profile/ProfileForm";
-import { CallUpdatePassword } from "../../redux/reducers/users/updatePassword";
+import {
+  CallGetUserById,
+  CallUpdatePassword,
+  CallUpdateUser,
+} from "../../redux/reducers/users/apiUser";
 
 export default function Profile() {
   const [form] = Form.useForm();
@@ -82,6 +84,7 @@ export default function Profile() {
     setLoading(true);
     try {
       const res = await CallUpdateUser(dataUser._id, formData);
+      console.log(res);
       if (res.isUpdate) {
         message.success("Profile updated successfully!");
         fetchData();

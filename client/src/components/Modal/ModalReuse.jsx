@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Form, Input, Button, Select, Drawer } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { callGetProjectCategory } from "../../redux/reducers/projects/getProjectCategory";
+import PropTypes from "prop-types";
 
 export default function ModalReuse({
   open,
@@ -29,7 +30,7 @@ export default function ModalReuse({
       if (initialValues) {
         form.setFieldsValue({
           ...initialValues,
-          category: initialValues.category?._id, // Đảm bảo chỉ lấy `_id`
+          category: initialValues.category?._id, 
         });
       } else {
         form.resetFields();
@@ -90,3 +91,11 @@ export default function ModalReuse({
     </Drawer>
   );
 }
+
+ModalReuse.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  initialValues: PropTypes.object,
+  isEditing: PropTypes.bool,
+};

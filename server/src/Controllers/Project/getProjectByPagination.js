@@ -39,7 +39,7 @@ const getProjectByPagination = async (req, res) => {
       .skip(skip)
       .limit(Number(pageSize))
       .populate("category")
-      .populate("creator", "username _id")
+      .populate("creator", "username _id avatar")
       .populate("members", "username _id");
 
     const pageCount = Math.ceil(totalProjects / Number(pageSize));

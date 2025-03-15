@@ -10,8 +10,8 @@ import {
 import { DATA_USER, USER_LOGIN, DATA_PROJECT } from "../../utils/constant";
 import { removeLocal } from "../../utils/config";
 import PropTypes from "prop-types";
-import { CallGetUserById } from "../../redux/reducers/users/getUserById";
 import { getUserData } from "../../utils/localStorage";
+import { CallGetUserById } from "../../redux/reducers/users/apiUser";
 
 export default function Sidebar({ collapsed }) {
   const [reset, setReset] = useState(0);

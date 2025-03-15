@@ -27,7 +27,8 @@ const getUserByPagination = async (req, res) => {
       .sort(sortQuery)
       .skip(skip)
       .limit(Number(limit))
-      .select("-password -_id");
+      .select("-password")
+      .populate("role", "name");
 
     if (result.length === 0) {
       failCode(res, "Users not found!");

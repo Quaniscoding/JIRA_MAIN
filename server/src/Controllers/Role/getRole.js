@@ -1,4 +1,4 @@
-const { failCode } = require("../../config/response");
+const { failCode, successCode } = require("../../config/response");
 const Role = require("../../Models/Role.model");
 
 const getRole = async (req, res) => {
@@ -6,6 +6,7 @@ const getRole = async (req, res) => {
     const role = await Role.find();
     successCode(res, role, "Get role successfully!");
   } catch (error) {
+    console.error("Get Role Error:", error);
     failCode(res, "Backend error!");
   }
 };

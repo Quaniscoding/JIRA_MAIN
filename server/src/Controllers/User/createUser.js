@@ -30,6 +30,7 @@ const createUser = async (req, res) => {
         gender,
         role: "user",
         avatar: `https://ui-avatars.com/api/?name=${username}`,
+        deleted: false,
       });
       successCode(res, "", "Create user successfully!");
     }
