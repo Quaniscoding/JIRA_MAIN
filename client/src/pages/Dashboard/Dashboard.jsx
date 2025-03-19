@@ -215,7 +215,7 @@ export default function Dashboard() {
         setPageSize(Number(rs.pageSize || pageSize));
         setPageIndex(Number(rs.pageIndex || pageIndex));
         setPageCount(Number(rs.pageCount || pageCount));
-        setTotal(Number(rs.totalRow || total));
+        setTotal(Number(rs.total || total));
       }
     } catch (error) {
       console.error("Error fetching data:", error);

@@ -5,7 +5,7 @@ const RequireAuth = () => {
   return user.role.name === "admin" ? (
     <Outlet />
   ) : (
-    <Navigate to="/login" replace />
+    <Navigate to="/not-found" replace />
   );
 };
 

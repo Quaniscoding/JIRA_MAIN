@@ -120,7 +120,7 @@ export default function ProjectDetails() {
             setStatus={setStatus}
             projectId={id}
             fetchData={fetchData}
-            tasks={tasks}
+            tasks={Array.isArray(tasks) ? tasks : []}
             handleCreateStatus={handleCreateStatus}
             handleCreateTask={handleCreateTask}
             isAddingTask={isAddingTask}

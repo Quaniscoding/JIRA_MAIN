@@ -1,6 +1,15 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Card, Input, Button, Popconfirm, Dropdown, notification } from "antd";
+import {
+  Card,
+  Input,
+  Button,
+  Popconfirm,
+  Dropdown,
+  notification,
+  ColorPicker,
+  message,
+} from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -14,33 +23,7 @@ import TaskInput from "../../Features/ProjectDetails/TaskInput";
 import StatusInput from "../../Features/ProjectDetails/StatusInput";
 import { CallSwapStatus } from "../../redux/reducers/status/updateSwapStatus";
 import "./kanbanBoard.css";
-/**
- * The KanBanBoard component is a container that renders multiple columns of statuses.
- * Each column is a container that renders a list of tasks.
- * The user can drag and drop the tasks between columns.
- * The user can also add new tasks to the columns.
- * The user can edit the name of the statuses and delete them.
- * The user can also add new statuses.
- * @param {object} props The props of the component.
- * @param {array} props.status The array of statuses.
- * @param {function} props.setStatus The function to update the state of the statuses.
- * @param {string} props.projectId The ID of the project.
- * @param {function} props.fetchData The function to fetch the data of the project.
- * @param {array} props.tasks The array of tasks.
- * @param {function} props.handleCreateStatus The function to create a new status.
- * @param {function} props.handleCreateTask The function to create a new task.
- * @param {boolean} props.isAddingTask The boolean to indicate if the user is adding a new task.
- * @param {function} props.setIsAddingTask The function to update the state of the isAddingTask.
- * @param {boolean} props.isAddingStatus The boolean to indicate if the user is adding a new status.
- * @param {function} props.setIsAddingStatus The function to update the state of the isAddingStatus.
- * @param {string} props.taskName The name of the new task.
- * @param {function} props.setTaskName The function to update the state of the taskName.
- * @param {string} props.statusName The name of the new status.
- * @param {function} props.setStatusName The function to update the state of the statusName.
- * @param {array} props.members The array of members of the project.
- * @param {function} props.handleDeleteTask The function to delete a task.
- */
-
+import { getContrastTextColor, rgbToHex } from "../../utils/colorUtils";
 const KanBanBoard = ({
   status,
   setStatus,
@@ -68,7 +51,6 @@ const KanBanBoard = ({
   const handleDragStart = (e, index) => {
     setDraggedIndex(index);
     e.dataTransfer.effectAllowed = "move";
-    // Lưu lại index dưới dạng chuỗi để lấy ở onDrop
     e.dataTransfer.setData("text/plain", index);
   };
 
@@ -95,7 +77,7 @@ const KanBanBoard = ({
     });
     if (response.isUpdate && response.result.data) {
       setStatus(
-        response.result.data.content.filter((s) => s.project === projectId)
+        response.result.data.content.filter((s) => s.project._id === projectId)
       );
     }
     setDraggedIndex(null);
@@ -141,6 +123,34 @@ const KanBanBoard = ({
       });
     }
   };
+  const handleColorChange = async (statusId, color) => {
+    try {
+      const updatedStatus = [...status];
+      const statusIndex = updatedStatus.findIndex((s) => s._id === statusId);
+
+      if (statusIndex === -1) {
+        console.error("Không tìm thấy status với ID:", statusId);
+        return;
+      }
+
+      updatedStatus[statusIndex] = { ...updatedStatus[statusIndex], color };
+      setStatus(updatedStatus);
+
+      const res = await CallUpdateStatus(statusId, updatedStatus[statusIndex]);
+
+      if (res.isUpdate) {
+        message.success({
+          message: "Update status success!",
+        });
+      } else {
+        throw new Error(res.message || "Update status failed!");
+      }
+    } catch (error) {
+      message.error({
+        message: error.message || "Có lỗi xảy ra!",
+      });
+    }
+  };
 
   const getDropdownMenu = (index, item) => ({
     items: [
@@ -149,6 +159,22 @@ const KanBanBoard = ({
         icon: <EditOutlined />,
         label: "Edit",
         onClick: () => handleEdit(index, item.statusName),
+      },
+      {
+        key: "changeColor",
+        icon: <EditOutlined />,
+        label: (
+          <ColorPicker
+            defaultFormat="hex"
+            showText
+            defaultValue={item.color}
+            color={item.color}
+            onChange={(color) => {
+              const hex = rgbToHex(color.metaColor);
+              handleColorChange(item._id, hex);
+            }}
+          />
+        ),
       },
       {
         key: "delete",
@@ -166,11 +192,10 @@ const KanBanBoard = ({
       },
     ],
   });
-
   return (
     <div className="flex gap-4 overflow-x-auto p-4">
       {status
-        .filter((item) => item.project === projectId)
+        .filter((item) => item.project._id === projectId)
         .sort((a, b) => a.order - b.order)
         .map((item, index) => (
           <div
@@ -184,8 +209,13 @@ const KanBanBoard = ({
             onDrop={(e) => handleDrop(e, index)}
           >
             <Card
+              hoverable
               title={
-                <div className="flex justify-between items-center">
+                <div
+                  className={`flex justify-between items-center text-[${getContrastTextColor(
+                    item.color || "#1890ff"
+                  )}]`}
+                >
                   {editingIndex === index ? (
                     <Input
                       value={editValue}
@@ -202,14 +232,28 @@ const KanBanBoard = ({
                       menu={getDropdownMenu(index, item)}
                       trigger={["click"]}
                     >
-                      <Button type="text" icon={<EllipsisOutlined />} />
+                      <Button
+                        type="text"
+                        icon={
+                          <EllipsisOutlined
+                            style={{
+                              color: getContrastTextColor(
+                                item.color || "#1890ff"
+                              ),
+                            }}
+                          />
+                        }
+                      />
                     </Dropdown>
                   )}
                 </div>
               }
-              className={`shadow-md bg-white rounded-lg ${
-                draggedIndex === index ? "scale-105 shadow-xl" : ""
-              }`}
+              styles={{
+                header: {
+                  backgroundColor: item.color ? item.color : "#1890ff",
+                  fontWeight: "bold",
+                },
+              }}
             >
               {tasks?.length >= 0 && (
                 <TaskCard
@@ -299,12 +343,13 @@ const KanBanBoard = ({
     </div>
   );
 };
+
 KanBanBoard.propTypes = {
   status: PropTypes.array.isRequired,
   setStatus: PropTypes.func.isRequired,
   projectId: PropTypes.string.isRequired,
   fetchData: PropTypes.func.isRequired,
-  tasks: PropTypes.array.isRequired,
+  tasks: PropTypes.object,
   handleCreateStatus: PropTypes.func.isRequired,
   handleCreateTask: PropTypes.func.isRequired,
   isAddingTask: PropTypes.bool.isRequired,
@@ -316,7 +361,7 @@ KanBanBoard.propTypes = {
   setStatusNew: PropTypes.func.isRequired,
   statusName: PropTypes.string.isRequired,
   setStatusName: PropTypes.func.isRequired,
-  members: PropTypes.array.isRequired,
+  members: PropTypes.array,
   handleDeleteTask: PropTypes.func.isRequired,
 };
 
